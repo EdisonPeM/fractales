@@ -1,0 +1,35 @@
+<!DOCTYPE html>
+<html lang="es">
+
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta http-equiv="X-UA-Compatible" content="ie=edge">
+    <title>Fractal - Julia/Mandelbrot</title>
+    <link rel="stylesheet" type="text/css" href="index.css">
+</head>
+
+<body>
+    <div>
+        <div>
+            <br /><br />
+            <label>c: </label>
+            <input type="number" id="c_a" placeholder="a">
+            <label> + </label>
+            <input type="number" id="c_b" placeholder="b">
+            <label>i</label>
+            <br /><br />
+            <button style="margin: 5px;" onclick="dibujarJulia()">Dibujar Julia</button>
+            <button style="margin: 5px;" onclick="dibujarMandelbrot()">Dibujar Mandelbrot</button>
+            <button style="margin: 5px;" onclick="dibujarColores()">Ver Colores</button>
+        </div>
+        <br />
+        <div class="flex">
+            <canvas width='500' height='500' id="miCanva"></canvas>
+        </div>
+    </div>
+    <script type="text/javascript" src="colors.js"></script>
+    <script type="text/javascript" src="index.js"></script>
+</body>
+
+</html>

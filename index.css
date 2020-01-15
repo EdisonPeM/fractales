@@ -1,0 +1,26 @@
+div {
+    text-align: center;
+    width: 100%;
+    height: 100%
+}
+
+input {
+    margin: 10px;
+    width: 40px;
+}
+
+canvas {
+    border: 1px solid;
+    width: 500px;
+    height: 500px
+}
+
+input[type="range"] {
+    transform: rotateZ(90deg);
+}
+
+.flex {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
