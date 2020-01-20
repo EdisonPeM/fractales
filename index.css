@@ -24,3 +24,15 @@ input[type="range"] {
     align-items: center;
     justify-content: center;
 }
+
+
+.flex-rows {
+    display: flex;
+    align-items: center;
+    flex-flow: row wrap;
+    justify-content: space-around;
+
+    width: 200px; 
+    height: 400px; 
+    margin-left: 25px;
+}
