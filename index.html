@@ -11,7 +11,7 @@
 
 <body>
     <div>
-        <h2>FACTALES DEL CONJUNTO DE JULIA</h2>
+        <h2>FRACTALES DEL CONJUNTO DE JULIA</h2>
         <div>
             <span>Para ver algunos de los fractales, indique un valor entre -1 y 1 de </span>
             <label>c: </label>
@@ -28,8 +28,7 @@
         <div class="flex">
             <canvas width='720' height='720' id="miCanva"></canvas>
             <div class="flex-rows">
-                <span>A continuación asigne los colores que desea visualizar</span>
-                <span>así como la magnitud de estos (0 a 64)</span>
+                <span>A continuación asigne los colores que desea visualizar, así como la magnitud de éstos</span>
                 <select name="first_color" id="first_color">
                     <option value="Rojo" selected>Rojo</option>
                     <option value="Amarillo">Amarillo</option>
@@ -39,7 +38,7 @@
                     <option value="Violeta">Violeta</option>
                     <option value="Blanco">Blanco</option>
                 </select>
-                <input type="number" id="first_tam" placeholder="16">
+                <input type="range" list="tickmarks" id="first_tam" value="16">
                 <select name="second_color" id="second_color">
                     <option value="Rojo">Rojo</option>
                     <option value="Amarillo" selected>Amarillo</option>
@@ -49,7 +48,7 @@
                     <option value="Violeta">Violeta</option>
                     <option value="Blanco">Blanco</option>
                 </select>
-                <input type="number" id="second_tam" placeholder="16">
+                <input type="range" list="tickmarks" id="second_tam" value="16">
                 <select name="third_color" id="third_color">
                     <option value="Rojo">Rojo</option>
                     <option value="Amarillo">Amarillo</option>
@@ -59,7 +58,7 @@
                     <option value="Violeta">Violeta</option>
                     <option value="Blanco">Blanco</option>
                 </select>
-                <input type="number" id="third_tam" placeholder="16">
+                <input type="range" list="tickmarks" id="third_tam" value="16">
                 <select name="fourth_color" id="fourth_color">
                     <option value="Rojo">Rojo</option>
                     <option value="Amarillo">Amarillo</option>
@@ -69,7 +68,7 @@
                     <option value="Violeta">Violeta</option>
                     <option value="Blanco">Blanco</option>
                 </select>
-                <input type="number" id="fourth_tam" placeholder="16">
+                <input type="range" list="tickmarks" id="fourth_tam" value="16">
                 <select name="fifth_color" id="fifth_color">
                     <option value="Rojo">Rojo</option>
                     <option value="Amarillo">Amarillo</option>
@@ -79,7 +78,17 @@
                     <option value="Violeta">Violeta</option>
                     <option value="Blanco" selected>Blanco</option>
                 </select>
-                <input type="number" id="fifth_tam" placeholder="16">
+                <input type="range" list="tickmarks" id="fifth_tam" value="16">
+                <datalist id="tickmarks">
+                    <option value="0">
+                    <option value="4">
+                    <option value="8">
+                    <option value="16">
+                    <option value="32">
+                    <option value="64">
+                    <option value="128">
+                    <option value="256">
+                </datalist>
             </div>
         </div>
     </div>

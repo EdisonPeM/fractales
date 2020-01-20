@@ -16,7 +16,8 @@ canvas {
 }
 
 input[type="range"] {
-    transform: rotateZ(90deg);
+    /* transform: rotateZ(90deg); */
+    width: 150px;
 }
 
 .flex {
@@ -33,6 +34,6 @@ input[type="range"] {
     justify-content: space-around;
 
     width: 200px; 
-    height: 400px; 
+    height: 450px; 
     margin-left: 25px;
 }
