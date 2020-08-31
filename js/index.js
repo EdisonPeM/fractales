@@ -14,15 +14,20 @@ window.addEventListener('resize', setRangeSize)
 /* ----------------------------------- */
 /*            Create Workers           */
 /* ----------------------------------- */
-let inProcess = false;
+let drawingInProcess = false;
 const spinner = document.getElementById('spinner');
 let myWorker = new Worker("js/worker.js");
 myWorker.addEventListener("message", function (oEvent) {
     if (oEvent.data.done) {
         spinner.style.display = 'none'
-        inProcess = false;
+        drawingInProcess = false;
+
+        // fixed range sliders values
+        if (oEvent.data.params) {
+            parm_a.value = oEvent.data.params.a || parm_a.value;
+            parm_b.value = oEvent.data.params.b || parm_b.value;
+        }
     }
-    // console.log(oEvent.data);
 });
 
 /* ----------------------------------- */
@@ -43,7 +48,7 @@ const juliaBtn = document.getElementById('juliaBtn');
 const mandelbrotBtn = document.getElementById('mandelbrotBtn');
 
 juliaBtn.addEventListener('click', function (ev) {
-    if (inProcess) return;
+    if (drawingInProcess) return;
 
     myWorker.postMessage({
         action: 'changeType',
@@ -52,7 +57,7 @@ juliaBtn.addEventListener('click', function (ev) {
 })
 
 mandelbrotBtn.addEventListener('click', function (ev) {
-    if (inProcess) return;
+    if (drawingInProcess) return;
 
     myWorker.postMessage({
         action: 'changeType',
@@ -64,11 +69,11 @@ mandelbrotBtn.addEventListener('click', function (ev) {
 /*        Send Messages to draw        */
 /* ----------------------------------- */
 function drawFractal() {
-    if (inProcess) return;
+    if (drawingInProcess) return;
 
-    inProcess = true;
+    drawingInProcess = true;
     setTimeout(function () {
-        if (inProcess) {
+        if (drawingInProcess) {
             spinner.style.display = ''
         }
     }, 0)
@@ -89,7 +94,7 @@ juliaBtn.addEventListener('click', drawFractal);
 mandelbrotBtn.addEventListener('click', drawFractal);
 
 function changeAxis() {
-    if (inProcess) return;
+    if (drawingInProcess) return;
 
     // Send Message to worker
     myWorker.postMessage({

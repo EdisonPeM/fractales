@@ -3,20 +3,21 @@ class Painter {
     cnvsJ;
     ctxJ;
 
+    // Julia Cache canvas
+    cnvsJ_cache;
+    ctxJ_cache;
+
     // Canvas to Mandelbrot Fractal
     cnvsM;
     ctxM;
 
     // Mandelbrot Cache canvas
-    cnvsJ_cache;
-    ctxJ_cache;
     cnvsM_cache;
     ctxM_cache;
 
     // Cache controls
     has_cnvsJ_cache = false;
     has_cnvsM_cache = false;
-    paramsHasChanged = false;
 
     // Size of all Canvas
     width;
@@ -78,12 +79,15 @@ class Painter {
         this.N = colors.length;
     }
 
-    clean(ctx) {
-        ctx.fillStyle = "white";
-        ctx.fillRect(0, 0, this.width, this.height);
+    // Get and set Params
+    getParams() {
+        return {
+            a: this.a,
+            b: this.b
+        }
     }
 
-    changeAxis(params) {
+    setParams(params) {
         // Clean Julia Caché
         if ((this.a !== params.a) || (this.b !== params.b)) this.has_cnvsJ_cache = false;
 
@@ -94,9 +98,19 @@ class Painter {
         this.clean(this.ctxM);
     }
 
+    // Clean Canvasses
+    clean(ctx) {
+        ctx.fillStyle = "white";
+        ctx.fillRect(0, 0, this.width, this.height);
+    }
+
+    /* ---------------------------- */
+    /*       Drawing Functions      */
+    /* ---------------------------- */
     dibujarMandelbrot() {
+        // Evaluate existent Caché
         if (!this.has_cnvsM_cache) {
-            this.dibujar(this.ctxM, this.mandelbrot.bind(this))
+            this.dibujar(this.ctxM, this.calculateMandelbrot.bind(this))
 
             // Save the mandelbrot drawing in caché
             this.ctxM_cache.drawImage(this.cnvsM, 0, 0);
@@ -117,8 +131,9 @@ class Painter {
     }
 
     dibujarJulia() {
+        // Evaluate existent Caché
         if (!this.has_cnvsJ_cache) {
-            this.dibujar(this.ctxJ, this.julia.bind(this));
+            this.dibujar(this.ctxJ, this.calculateJulia.bind(this));
 
             // Save the julia drawing in caché
             this.ctxJ_cache.drawImage(this.cnvsJ, 0, 0);
@@ -130,7 +145,7 @@ class Painter {
         return this.cnvsJ;
     }
 
-
+    // General function to draw
     dibujar(currentCtx, funcionFractal) {
         let n = 0
         for (let i = 0; i < this.width; i++) {
@@ -142,7 +157,11 @@ class Painter {
         }
     }
 
-    mandelbrot(px_x, px_y) {
+    /* ----------------------------------- */
+    /*    Cuadratic Functions Algorithms   */
+    /* ----------------------------------- */
+    // Mandelbrot Algirhtm
+    calculateMandelbrot(px_x, px_y) {
         // Calculate each value of c per pixer
         let an = this.amin + px_x * this.da;
         let bn = this.bmin + px_y * this.db;
@@ -171,7 +190,8 @@ class Painter {
         return n
     }
 
-    julia(px_x, px_y) {
+    // Julia Algirhtm
+    calculateJulia(px_x, px_y) {
         // Calculate each value of z per pixel
         let xn = this.xmin + px_x * this.dx;
         let yn = this.ymin + px_y * this.dy;

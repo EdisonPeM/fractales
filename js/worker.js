@@ -2,9 +2,7 @@ self.importScripts('./painter.js')
 self.importScripts('./colors.js')
 
 let ctx;
-
 let myPainter;
-
 let fractalName;
 
 self.onmessage = function (e) {
@@ -22,28 +20,27 @@ self.onmessage = function (e) {
             break
 
         case 'draw':
-            myPainter.changeAxis(e.data.params)
-            pintar(fractalName)
+            pintar()
             break;
+
         case 'changeAxis':
-            myPainter.changeAxis(e.data.params)
+            myPainter.setParams(e.data.params)
 
             // Only Madelbrot show axis
-            if (fractalName === 'mandelbrot') {
-                pintar(fractalName)
-            }
+            if (fractalName === 'mandelbrot') pintar()
             break;
     }
 }
 
-function pintar(fratalCase) {
-    switch (fratalCase) {
+function pintar() {
+    switch (fractalName) {
         case 'julia':
             let cnvsJ = myPainter.dibujarJulia();
             ctx.drawImage(cnvsJ, 0, 0);
 
             postMessage({
                 message: 'Julia pintado con Exito',
+                params: myPainter.getParams(),
                 done: true
             });
 
@@ -55,6 +52,7 @@ function pintar(fratalCase) {
 
             postMessage({
                 message: 'Mandelbrot pintado con Exito',
+                params: myPainter.getParams(),
                 done: true
             });
 
