@@ -2,20 +2,21 @@ var gama = new Array(256).fill(0).map((e, index) => rgbToHex(index))
 
 var colors
 cambiar_colores()
+
 function cambiar_colores() {
     colors = ["#000000"]
 
-    let first_tam = document.getElementById("first_tam").value
-    let second_tam = document.getElementById("second_tam").value
-    let third_tam = document.getElementById("third_tam").value
-    let fourth_tam = document.getElementById("fourth_tam").value
-    let fifth_tam = document.getElementById("fifth_tam").value
+    let first_tam = ""; // document.getElementById("first_tam").value
+    let second_tam = "" // document.getElementById("second_tam").value
+    let third_tam = "" // document.getElementById("third_tam").value
+    let fourth_tam = "" // document.getElementById("fourth_tam").value
+    let fifth_tam = "" // document.getElementById("fifth_tam").value
 
-    agregar(document.getElementById("first_color").value, first_tam == "" ? 16 : first_tam - 0)
-    agregar(document.getElementById("second_color").value, second_tam == "" ? 16 : second_tam - 0)
-    agregar(document.getElementById("third_color").value, third_tam == "" ? 16 : third_tam - 0)
-    agregar(document.getElementById("fourth_color").value, fourth_tam == "" ? 16 : fourth_tam - 0)
-    agregar(document.getElementById("fifth_color").value, fifth_tam == "" ? 16 : fifth_tam - 0)
+    agregar("Rojo", first_tam == "" ? 16 : first_tam - 0)
+    agregar("Amarillo", second_tam == "" ? 16 : second_tam - 0)
+    agregar("Verde", third_tam == "" ? 16 : third_tam - 0)
+    agregar("Cyan", fourth_tam == "" ? 16 : fourth_tam - 0)
+    agregar("Blanco", fifth_tam == "" ? 16 : fifth_tam - 0)
 }
 
 /**------- FUNCIONES -----------**/

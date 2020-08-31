@@ -16,7 +16,7 @@ window.addEventListener('resize', setRangeSize)
 /* ----------------------------------- */
 
 const spinner = document.getElementById('spinner');
-let myWorker = new Worker("worker.js");
+let myWorker = new Worker("js/worker.js");
 myWorker.addEventListener("message", function (oEvent) {
     // console.log(oEvent.data);
     if (oEvent.data.done) {
