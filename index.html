@@ -46,12 +46,16 @@
             <div class="canva-container">
                 <input id="parm_a" class="range" type="range" value="0" min="-1" step="0.001" max="1">
                 <div class="blank"></div>
-                <canvas width='720' height='720' id="miCanva"></canvas>
+                <div class="canva">
+                    <canvas width='720' height='720' id="miCanva"></canvas>
+                    <div id="spinner" style="display: none;">
+                        <div class="loader"></div>
+                    </div>
+                </div>
                 <div class="vertical-rage">
                     <input id="parm_b" class="range" type="range" value="0" min="-1" step="0.001" max="1">
                 </div>
             </div>
-            <div class="spinner"></div>
             <br>
             <hr>
             <footer class="copyright">
@@ -59,7 +63,7 @@
             </footer>
         </div>
     </main>
-    <script type="module" src="index.js"></script>
+    <script src="index.js"></script>
 </body>
 
 </html>
