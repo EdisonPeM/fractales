@@ -1,3 +1,15 @@
+// Document Actions
+const parm_a = document.getElementById('parm_a')
+const parm_b = document.getElementById('parm_b')
+
+function setRangeSize() {
+    parm_b.style.width = parm_a.getClientRects()[0].width + 'px';
+}
+
+document.addEventListener('DOMContentLoaded', setRangeSize)
+window.addEventListener('resize', setRangeSize)
+// 
+/*
 var miCanva = document.getElementById("miCanva");
 var ctx = miCanva.getContext("2d");
 
@@ -25,9 +37,9 @@ function dibujarMandelbrot() {
     dibujar(mandelbrot)
 
     let x = (c[0] - xmin) / dx;
-    let x_0 = (- xmin) / dx;
+    let x_0 = (-xmin) / dx;
     let y = q - (c[1] - ymin) / dx;
-    let y_0 = (- ymin) / dx;
+    let y_0 = (-ymin) / dx;
 
     ctx.fillStyle = "white";
     // ctx.fillRect(x_0, 0, 1, p);
@@ -120,3 +132,4 @@ function yn_1(xn, yn, y) {
 function rn(xn, yn) {
     return Math.pow(xn, 2) + Math.pow(yn, 2)
 }
+*/
