@@ -31,7 +31,8 @@ body {
 }
 
 .btn:focus {
-    background-color: rgb(14, 46, 189);
+    outline: 1px solid rgb(12, 53, 235);
+    outline-offset: 2px;
 }
 
 .btn:active {
