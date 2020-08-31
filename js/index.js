@@ -14,14 +14,15 @@ window.addEventListener('resize', setRangeSize)
 /* ----------------------------------- */
 /*            Create Workers           */
 /* ----------------------------------- */
-
+let inProcess = false;
 const spinner = document.getElementById('spinner');
 let myWorker = new Worker("js/worker.js");
 myWorker.addEventListener("message", function (oEvent) {
-    // console.log(oEvent.data);
     if (oEvent.data.done) {
         spinner.style.display = 'none'
+        inProcess = false;
     }
+    // console.log(oEvent.data);
 });
 
 /* ----------------------------------- */
@@ -42,6 +43,8 @@ const juliaBtn = document.getElementById('juliaBtn');
 const mandelbrotBtn = document.getElementById('mandelbrotBtn');
 
 juliaBtn.addEventListener('click', function (ev) {
+    if (inProcess) return;
+
     myWorker.postMessage({
         action: 'changeType',
         type: 'julia'
@@ -49,6 +52,8 @@ juliaBtn.addEventListener('click', function (ev) {
 })
 
 mandelbrotBtn.addEventListener('click', function (ev) {
+    if (inProcess) return;
+
     myWorker.postMessage({
         action: 'changeType',
         type: 'mandelbrot'
@@ -59,17 +64,42 @@ mandelbrotBtn.addEventListener('click', function (ev) {
 /*        Send Messages to draw        */
 /* ----------------------------------- */
 function drawFractal() {
-    spinner.style.display = ''
+    if (inProcess) return;
+
+    inProcess = true;
+    setTimeout(function () {
+        if (inProcess) {
+            spinner.style.display = ''
+        }
+    }, 0)
+
+    // Send Message to worker
     myWorker.postMessage({
         action: 'draw',
         params: {
-            a: parm_a.value,
-            b: parm_b.value
+            a: +parm_a.value,
+            b: +parm_b.value
         }
     })
 }
 
-parm_a.addEventListener('change', drawFractal)
-parm_b.addEventListener('change', drawFractal)
-juliaBtn.addEventListener('click', drawFractal)
-mandelbrotBtn.addEventListener('click', drawFractal)
+parm_a.addEventListener('change', drawFractal);
+parm_b.addEventListener('change', drawFractal);
+juliaBtn.addEventListener('click', drawFractal);
+mandelbrotBtn.addEventListener('click', drawFractal);
+
+function changeAxis() {
+    if (inProcess) return;
+
+    // Send Message to worker
+    myWorker.postMessage({
+        action: 'changeAxis',
+        params: {
+            a: +parm_a.value,
+            b: +parm_b.value
+        }
+    })
+}
+
+parm_a.addEventListener('input', changeAxis);
+parm_b.addEventListener('input', changeAxis);
