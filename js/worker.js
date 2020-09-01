@@ -10,7 +10,7 @@ self.onmessage = function (e) {
     switch (e.data.action) {
         case 'init':
             let canva = e.data.canva;
-            ctx = e.data.canva.getContext("2d");
+            ctx = canva.getContext("2d");
 
             myPainter = new Painter(canva.width, canva.height, colors);
             break;
@@ -20,20 +20,25 @@ self.onmessage = function (e) {
             break
 
         case 'draw':
-            pintar()
+            pintar(fractalName)
             break;
 
         case 'changeAxis':
             myPainter.setParams(e.data.params)
 
             // Only Madelbrot show axis
-            if (fractalName === 'mandelbrot') pintar()
+            if (fractalName === 'mandelbrot') pintar('mandelbrot')
+            break;
+
+        case 'random':
+            fractalName = 'julia';
+            pintar('random')
             break;
     }
 }
 
-function pintar() {
-    switch (fractalName) {
+function pintar(fractalCase) {
+    switch (fractalCase) {
         case 'julia':
             let cnvsJ = myPainter.dibujarJulia();
             ctx.drawImage(cnvsJ, 0, 0);
@@ -52,6 +57,18 @@ function pintar() {
 
             postMessage({
                 message: 'Mandelbrot pintado con Exito',
+                params: myPainter.getParams(),
+                done: true
+            });
+
+            break;
+
+        case 'random':
+            let cnvsR = myPainter.dibujarJuliaRandom();
+            ctx.drawImage(cnvsR, 0, 0);
+
+            postMessage({
+                message: 'Fractal Aleatorio pintado con Exito',
                 params: myPainter.getParams(),
                 done: true
             });

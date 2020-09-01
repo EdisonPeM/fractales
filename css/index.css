@@ -12,10 +12,14 @@ body {
     background: #c9f7f7;
 }
 
+#output {
+    font-size: 1.5em;
+}
+
 .btn {
     font-size: 1em;
     color: white;
-    background-color: #3a5ae6;
+    background-color: hsl(229, 77%, 55%);
 
     padding: 1em;
     border: none;
@@ -27,16 +31,29 @@ body {
 }
 
 .btn:hover {
-    background-color: rgb(12, 53, 235);
-}
-
-.btn:focus {
-    outline: 1px solid rgb(12, 53, 235);
-    outline-offset: 2px;
+    background-color: hsl(229, 90%, 45%);
 }
 
 .btn:active {
-    background-color: rgb(14, 46, 189);
+    background-color: hsl(229, 90%, 35%);
+}
+
+.btn:focus,
+input[type="range"]:focus {
+    outline: 1px solid hsl(229, 90%, 55%);
+    outline-offset: 2px;
+}
+
+.btn-random {
+    background-color: hsl(39, 90%, 55%);
+}
+
+.btn-random:hover {
+    background-color: hsl(39, 90%, 45%);
+}
+
+.btn-random:active {
+    background-color: hsl(39, 90%, 35%);
 }
 
 .copyright {
@@ -64,20 +81,20 @@ body {
     justify-content: center;
 }
 
-#miCanva {
+.range input {
     width: 100%;
-    max-width: 500px;
-    background-color: #fff;
-    box-shadow: 0 0 5px #0003;
+}
+
+.range {
+    position: relative;
+}
+
+.vertical-range {
+    padding-left: 1.5em;
 }
 
 #parm_a {
     margin: 10px 0;
-}
-
-.vertical-rage {
-    padding-left: 1.5em;
-    position: relative;
 }
 
 #parm_b {
@@ -86,17 +103,58 @@ body {
     transform-origin: top left;
 }
 
-.range {
-    color: red;
-    height: 1rem;
+
+.range::after {
+    content: attr(data-max);
 }
 
-.range:focus {
-    outline: 1px solid rgb(12, 53, 235);
+.range::before {
+    content: attr(data-min);
 }
 
+.range::after,
+.range::before {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 200ms;
+}
+
+.range:hover::after,
+.range:hover::before {
+    opacity: 1;
+}
+
+.vertical-range::before {
+    bottom: 0;
+}
+
+.vertical-range::after,
+.vertical-range::before {
+    left: 2em;
+}
+
+.range:not(.vertical-range)::after {
+    top: -0.5em;
+    right: 0;
+}
+
+.range:not(.vertical-range)::before {
+    top: -0.5em;
+}
+
+/* ------------------------------ */
+/*          canva Styles          */
+/* ------------------------------ */
 .canva {
     position: relative;
+}
+
+#miCanva {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff;
+    box-shadow: 0 0 5px #0003;
 }
 
 #spinner {
