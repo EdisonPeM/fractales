@@ -157,6 +157,15 @@ class Painter {
         }
     }
 
+    dibujarJuliaRandom() {
+        this.a = Math.random() * (this.amax - this.amin) + this.amin;
+        this.b = Math.random() * (this.bmax - this.bmin) + this.bmin;
+        this.has_cnvsJ_cache = false;
+
+        let cnvsR = this.dibujarJulia();
+        return cnvsR;
+    }
+
     /* ----------------------------------- */
     /*    Cuadratic Functions Algorithms   */
     /* ----------------------------------- */

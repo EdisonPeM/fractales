@@ -8,6 +8,10 @@ function setRangeSize() {
     parm_b.style.width = parm_a.getClientRects()[0].width + 'px';
 }
 
+if (!window.OffscreenCanvas) {
+    alert('Su navegador no soporta esta aplicación')
+}
+
 document.addEventListener('DOMContentLoaded', setRangeSize)
 window.addEventListener('resize', setRangeSize)
 
@@ -26,6 +30,9 @@ myWorker.addEventListener("message", function (oEvent) {
         if (oEvent.data.params) {
             parm_a.value = oEvent.data.params.a || parm_a.value;
             parm_b.value = oEvent.data.params.b || parm_b.value;
+
+            parm_a.title = parm_a.value;
+            parm_b.title = parm_b.value;
         }
     }
 });
@@ -108,3 +115,23 @@ function changeAxis() {
 
 parm_a.addEventListener('input', changeAxis);
 parm_b.addEventListener('input', changeAxis);
+
+/* ----------------------------------- */
+/*       Messages to random draw       */
+/* ----------------------------------- */
+const randomBtn = document.getElementById('randomBtn');
+randomBtn.addEventListener('click', function (ev) {
+    if (drawingInProcess) return;
+
+    drawingInProcess = true;
+    setTimeout(function () {
+        if (drawingInProcess) {
+            spinner.style.display = ''
+        }
+    }, 0)
+
+    // Send Message to worker
+    myWorker.postMessage({
+        action: 'random'
+    })
+})

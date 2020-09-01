@@ -15,7 +15,7 @@ body {
 .btn {
     font-size: 1em;
     color: white;
-    background-color: #3a5ae6;
+    background-color: hsl(229, 77%, 55%);
 
     padding: 1em;
     border: none;
@@ -27,16 +27,29 @@ body {
 }
 
 .btn:hover {
-    background-color: rgb(12, 53, 235);
-}
-
-.btn:focus {
-    outline: 1px solid rgb(12, 53, 235);
-    outline-offset: 2px;
+    background-color: hsl(229, 90%, 45%);
 }
 
 .btn:active {
-    background-color: rgb(14, 46, 189);
+    background-color: hsl(229, 90%, 35%);
+}
+
+.btn:focus,
+input[type="range"]:focus {
+    outline: 1px solid hsl(229, 90%, 55%);
+    outline-offset: 2px;
+}
+
+.btn-random {
+    background-color: hsl(39, 90%, 55%);
+}
+
+.btn-random:hover {
+    background-color: hsl(39, 90%, 45%);
+}
+
+.btn-random:active {
+    background-color: hsl(39, 90%, 35%);
 }
 
 .copyright {
@@ -64,20 +77,17 @@ body {
     justify-content: center;
 }
 
-#miCanva {
+.range input {
     width: 100%;
-    max-width: 500px;
-    background-color: #fff;
-    box-shadow: 0 0 5px #0003;
+}
+
+.vertical-range {
+    padding-left: 1.5em;
+    position: relative;
 }
 
 #parm_a {
     margin: 10px 0;
-}
-
-.vertical-rage {
-    padding-left: 1.5em;
-    position: relative;
 }
 
 #parm_b {
@@ -86,17 +96,19 @@ body {
     transform-origin: top left;
 }
 
-.range {
-    color: red;
-    height: 1rem;
-}
-
-.range:focus {
-    outline: 1px solid rgb(12, 53, 235);
-}
-
+/* ------------------------------ */
+/*          canva Styles          */
+/* ------------------------------ */
 .canva {
     position: relative;
+}
+
+#miCanva {
+    display: block;
+    width: 100%;
+    max-width: 500px;
+    background-color: #fff;
+    box-shadow: 0 0 5px #0003;
 }
 
 #spinner {
