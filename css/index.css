@@ -12,6 +12,10 @@ body {
     background: #c9f7f7;
 }
 
+#output {
+    font-size: 1.5em;
+}
+
 .btn {
     font-size: 1em;
     color: white;
@@ -81,9 +85,12 @@ input[type="range"]:focus {
     width: 100%;
 }
 
+.range {
+    position: relative;
+}
+
 .vertical-range {
     padding-left: 1.5em;
-    position: relative;
 }
 
 #parm_a {
@@ -94,6 +101,45 @@ input[type="range"]:focus {
     position: absolute;
     transform: rotate(-90deg) translate(-100%, -100%);
     transform-origin: top left;
+}
+
+
+.range::after {
+    content: attr(data-max);
+}
+
+.range::before {
+    content: attr(data-min);
+}
+
+.range::after,
+.range::before {
+    position: absolute;
+    opacity: 0;
+    transition: opacity 200ms;
+}
+
+.range:hover::after,
+.range:hover::before {
+    opacity: 1;
+}
+
+.vertical-range::before {
+    bottom: 0;
+}
+
+.vertical-range::after,
+.vertical-range::before {
+    left: 2em;
+}
+
+.range:not(.vertical-range)::after {
+    top: -0.5em;
+    right: 0;
+}
+
+.range:not(.vertical-range)::before {
+    top: -0.5em;
 }
 
 /* ------------------------------ */

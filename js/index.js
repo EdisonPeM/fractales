@@ -16,6 +16,21 @@ document.addEventListener('DOMContentLoaded', setRangeSize)
 window.addEventListener('resize', setRangeSize)
 
 /* ----------------------------------- */
+/*            Update Output            */
+/* ----------------------------------- */
+
+const output = document.getElementById('output')
+
+parm_a.addEventListener('input', updateOutput)
+parm_b.addEventListener('input', updateOutput)
+
+function updateOutput() {
+    parm_a.title = parm_a.value;
+    parm_b.title = parm_b.value;
+    output.innerText = `c = (${(+parm_a.value).toFixed(5)}) + (${(+parm_b.value).toFixed(5)})i`
+}
+
+/* ----------------------------------- */
 /*            Create Workers           */
 /* ----------------------------------- */
 let drawingInProcess = false;
@@ -31,8 +46,7 @@ myWorker.addEventListener("message", function (oEvent) {
             parm_a.value = oEvent.data.params.a || parm_a.value;
             parm_b.value = oEvent.data.params.b || parm_b.value;
 
-            parm_a.title = parm_a.value;
-            parm_b.title = parm_b.value;
+            updateOutput()
         }
     }
 });
