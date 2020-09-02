@@ -1,5 +1,5 @@
 // Method to import other scripts provided by Web Worker
-importScripts('./FractalCalculator.js')
+importScripts('workerUtils/FractalCalculator.js')
 
 class Painter {
     constructor(realCanvas) {
