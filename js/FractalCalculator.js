@@ -39,12 +39,16 @@ class FractalCalculator {
     /*          Get Axis of a coor         */
     /* ----------------------------------- */
     calculateAxis(x, y, q, p) {
-        let coor_x = q * (x - this.amin) / (this.amax - this.amin);
-        let coor_y = p - p * (y - this.bmin) / (this.bmax - this.bmin);
-
         return {
-            coor_x,
-            coor_y
+            x: q * (x - this.amin) / (this.amax - this.amin),
+            y: p - p * (y - this.bmin) / (this.bmax - this.bmin)
+        }
+    }
+
+    generateRandomAxis() {
+        return {
+            x: Math.random() * (this.xmax - this.xmin) + this.xmin,
+            y: Math.random() * (this.ymax - this.ymin) + this.ymin
         }
     }
 

@@ -19,7 +19,7 @@ class Painter {
         this.ctxJ_cache = this.cnvsJ_cache.getContext('2d')
         this.has_cnvsJ_cache = false;
 
-        // Params
+        // Initial Axis
         this.x = 0;
         this.y = 0;
 
@@ -30,12 +30,9 @@ class Painter {
         this.myCalc = new FractalCalculator(this.width, this.height, this.colors.length);
     }
 
-    setColors(colors) {
-        this.colors = colors;
-        this.myCalc.setN(colors.length);
-    }
-
-    // Get and set Params
+    /* ---------------------------- */
+    /*      Getters and Setters     */
+    /* ---------------------------- */
     getAxis() {
         return {
             x: this.x,
@@ -52,42 +49,49 @@ class Painter {
         this.y = axis.y;
     }
 
+    setColors(colors) {
+        this.colors = colors;
+        this.myCalc.setN(colors.length);
+    }
+
     /* ---------------------------- */
     /*       Drawing Functions      */
     /* ---------------------------- */
     dibujarMandelbrot() {
-        // Evaluate existent Caché
+        // Evaluate existent Mandelbrot Cache
         if (!this.has_cnvsM_cache) {
             this.dibujar((x, y) => this.myCalc.calculateMandelbrot(x, y))
 
             // Save the mandelbrot drawing in caché
             this.ctxM_cache.drawImage(this.canvas, 0, 0);
             this.has_cnvsM_cache = true;
+
         } else {
             this.ctx.drawImage(this.cnvsM_cache, 0, 0);
         }
 
         // Draw Axis
         let {
-            coor_x,
-            coor_y
+            x,
+            y
         } = this.myCalc.calculateAxis(this.x, this.y, this.width, this.height);
 
         this.ctx.fillStyle = 'white';
-        this.ctx.fillRect(coor_x, 0, 1, this.height);
-        this.ctx.fillRect(0, coor_y, this.width, 1);
+        this.ctx.fillRect(x, 0, 1, this.height);
+        this.ctx.fillRect(0, y, this.width, 1);
 
         return true;
     }
 
     dibujarJulia() {
-        // Evaluate existent Caché
+        // Evaluate existent Julia Cache
         if (!this.has_cnvsJ_cache) {
             this.dibujar((x, y) => this.myCalc.calculateJulia(this.x, this.y, x, y));
 
             // Save the julia drawing in caché
             this.ctxJ_cache.drawImage(this.canvas, 0, 0);
             this.has_cnvsJ_cache = true;
+
         } else {
             this.ctx.drawImage(this.cnvsJ_cache, 0, 0);
         }
@@ -108,10 +112,10 @@ class Painter {
     }
 
     dibujarJuliaRandom() {
-        this.x = Math.random() * (this.xmax - this.xmin) + this.xmin;
-        this.y = Math.random() * (this.ymax - this.ymin) + this.ymin;
-        this.has_cnvsJ_cache = false;
+        let randomAxis = this.myCalc.generateRandomAxis();
+        this.setAxis(randomAxis)
 
+        this.has_cnvsJ_cache = false;
         return this.dibujarJulia();
     }
 }

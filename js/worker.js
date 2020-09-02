@@ -1,9 +1,8 @@
 self.importScripts('./Painter.js')
 self.importScripts('./colors.js')
 
-let ctx;
 let myPainter;
-let fractalName;
+let currentFractal;
 
 self.onmessage = function (e) {
     // console.log(e.data);
@@ -17,11 +16,11 @@ self.onmessage = function (e) {
             break;
 
         case 'changeType':
-            fractalName = e.data.type;
+            currentFractal = e.data.type;
             break
 
         case 'draw':
-            pintar(fractalName)
+            pintar(currentFractal)
             break;
 
         case 'changeAxis':
@@ -31,11 +30,13 @@ self.onmessage = function (e) {
             })
 
             // Only Madelbrot show axis
-            if (fractalName === 'mandelbrot') pintar('mandelbrot')
+            if (currentFractal === 'mandelbrot')
+                pintar('mandelbrot')
+
             break;
 
         case 'random':
-            fractalName = 'julia';
+            currentFractal = 'julia';
             pintar('random')
             break;
     }

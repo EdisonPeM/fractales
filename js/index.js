@@ -11,15 +11,9 @@ function setRangeSize() {
 document.addEventListener('DOMContentLoaded', setRangeSize)
 window.addEventListener('resize', setRangeSize)
 
-// Verify Browser Compatibility
-if (!window.OffscreenCanvas) {
-    alert('Su navegador no soporta esta aplicación')
-}
-
 /* ----------------------------------- */
 /*            Update Output            */
 /* ----------------------------------- */
-
 const output = document.getElementById('output');
 
 function updateOutput() {
@@ -32,11 +26,32 @@ parm_a.addEventListener('input', updateOutput);
 parm_b.addEventListener('input', updateOutput);
 
 /* ----------------------------------- */
+/*     Verify Browser Compatibility    */
+/* ----------------------------------- */
+if (!window.OffscreenCanvas) {
+    alert('Su navegador no soporta esta aplicación')
+}
+
+/* ----------------------------------- */
 /*            Create Workers           */
 /* ----------------------------------- */
 let drawingInProcess = false;
 const spinner = document.getElementById('spinner');
 let myWorker = new Worker("js/worker.js");
+
+/* ----------------------------------- */
+/*      Transfer Canvas to worker      */
+/* ----------------------------------- */
+const miCanva = document.getElementById("miCanva");
+let transferCanva = miCanva.transferControlToOffscreen();
+myWorker.postMessage({
+    action: 'init',
+    canva: transferCanva
+}, [transferCanva]);
+
+/* ------------------------------------------ */
+/*    Add Message Event Listener to Worker    */
+/* ------------------------------------------ */
 myWorker.addEventListener("message", function (oEvent) {
     if (oEvent.data.done) {
         spinner.style.display = 'none'
@@ -52,49 +67,33 @@ myWorker.addEventListener("message", function (oEvent) {
     }
 });
 
-/* ----------------------------------- */
-/*      Transfer Canvas to worker      */
-/* ----------------------------------- */
-const miCanva = document.getElementById("miCanva");
-let transferCanva = miCanva.transferControlToOffscreen()
-
-myWorker.postMessage({
-    action: 'init',
-    canva: transferCanva
-}, [transferCanva]);
-
-/* ----------------------------------- */
-/*        Adding Buttons Events        */
-/* ----------------------------------- */
+/* --------------------------------------- */
+/*    Events to send Messages to Worker    */
+/* --------------------------------------- */
 const juliaBtn = document.getElementById('juliaBtn');
 const mandelbrotBtn = document.getElementById('mandelbrotBtn');
 
-juliaBtn.addEventListener('click', function (ev) {
+function changeFractalType(fractalName) {
     if (drawingInProcess) return;
 
     myWorker.postMessage({
         action: 'changeType',
-        type: 'julia'
+        type: fractalName
     })
-})
+}
 
-mandelbrotBtn.addEventListener('click', function (ev) {
-    if (drawingInProcess) return;
-
-    myWorker.postMessage({
-        action: 'changeType',
-        type: 'mandelbrot'
-    })
-})
+juliaBtn.addEventListener('click', () => changeFractalType('julia'))
+mandelbrotBtn.addEventListener('click', () => changeFractalType('mandelbrot'))
 
 /* ----------------------------------- */
 /*        Send Messages to draw        */
 /* ----------------------------------- */
 function drawFractal() {
     if (drawingInProcess) return;
-
     drawingInProcess = true;
-    setTimeout(function () {
+
+    // Use SetTimeOut to wait the worker response message
+    setTimeout(() => {
         if (drawingInProcess) {
             spinner.style.display = ''
         }
@@ -115,6 +114,9 @@ parm_b.addEventListener('change', drawFractal);
 juliaBtn.addEventListener('click', drawFractal);
 mandelbrotBtn.addEventListener('click', drawFractal);
 
+/* ---------------------------------------- */
+/*     Messages to change axis on input     */
+/* ---------------------------------------- */
 function changeAxis() {
     if (drawingInProcess) return;
 
@@ -137,9 +139,10 @@ parm_b.addEventListener('input', changeAxis);
 const randomBtn = document.getElementById('randomBtn');
 randomBtn.addEventListener('click', function (ev) {
     if (drawingInProcess) return;
-
     drawingInProcess = true;
-    setTimeout(function () {
+
+    // Use SetTimeOut to wait the worker response message
+    setTimeout(() => {
         if (drawingInProcess) {
             spinner.style.display = ''
         }
