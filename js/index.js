@@ -8,27 +8,28 @@ function setRangeSize() {
     parm_b.style.width = parm_a.getClientRects()[0].width + 'px';
 }
 
+document.addEventListener('DOMContentLoaded', setRangeSize)
+window.addEventListener('resize', setRangeSize)
+
+// Verify Browser Compatibility
 if (!window.OffscreenCanvas) {
     alert('Su navegador no soporta esta aplicación')
 }
-
-document.addEventListener('DOMContentLoaded', setRangeSize)
-window.addEventListener('resize', setRangeSize)
 
 /* ----------------------------------- */
 /*            Update Output            */
 /* ----------------------------------- */
 
-const output = document.getElementById('output')
-
-parm_a.addEventListener('input', updateOutput)
-parm_b.addEventListener('input', updateOutput)
+const output = document.getElementById('output');
 
 function updateOutput() {
     parm_a.title = parm_a.value;
     parm_b.title = parm_b.value;
-    output.innerText = `c = (${(+parm_a.value).toFixed(5)}) + (${(+parm_b.value).toFixed(5)})i`
+    output.innerText = `c = (${(+parm_a.value).toFixed(3)}) + (${(+parm_b.value).toFixed(3)})i`
 }
+
+parm_a.addEventListener('input', updateOutput);
+parm_b.addEventListener('input', updateOutput);
 
 /* ----------------------------------- */
 /*            Create Workers           */
