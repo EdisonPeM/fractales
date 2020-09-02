@@ -1,3 +1,5 @@
+import ColorGenerator from './ColorGenerator.js'
+
 /* ----------------------------------- */
 /*     Document Fixed Range Styles     */
 /* ----------------------------------- */
@@ -46,8 +48,18 @@ const miCanva = document.getElementById("miCanva");
 let transferCanva = miCanva.transferControlToOffscreen();
 myWorker.postMessage({
     action: 'init',
-    canva: transferCanva
+    canvas: transferCanva
 }, [transferCanva]);
+
+/* ----------------------------------- */
+/*        Create Color Generator       */
+/*      And send Colors to worker      */
+/* ----------------------------------- */
+let colorGen = new ColorGenerator();
+myWorker.postMessage({
+    action: 'setColors',
+    colors: colorGen.generateColors()
+});
 
 /* ------------------------------------------ */
 /*    Add Message Event Listener to Worker    */

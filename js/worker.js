@@ -1,5 +1,4 @@
 self.importScripts('workerUtils/Painter.js')
-self.importScripts('workerUtils/colors.js')
 
 this.myPainter;
 this.currentFractal;
@@ -8,11 +7,12 @@ self.onmessage = function (e) {
     // console.log(e.data);
     switch (e.data.action) {
         case 'init':
-            let canva = e.data.canva;
-            // let colors = colors
+            this.ctx = e.data.canvas.getContext("2d");
+            this.myPainter = new Painter(e.data.canvas);
+            break;
 
-            this.myPainter = new Painter(canva);
-            this.myPainter.setColors(colors);
+        case 'setColors':
+            this.myPainter.setColors(e.data.colors);
             break;
 
         case 'changeType':
@@ -20,7 +20,7 @@ self.onmessage = function (e) {
             break
 
         case 'draw':
-            pintar(this.currentFractal)
+            draw(this.currentFractal)
             break;
 
         case 'changeAxis':
@@ -31,42 +31,38 @@ self.onmessage = function (e) {
 
             // Only Madelbrot show axis
             if (this.currentFractal === 'mandelbrot')
-                pintar('mandelbrot')
+                draw('mandelbrot')
 
             break;
 
         case 'random':
+            // Random fractal works on Julia Set
             this.currentFractal = 'julia';
-            pintar('random')
+            draw('random')
             break;
     }
 }
 
-function pintar(fractalCase) {
-    let done = true;
-    let message = 'No se pintó nada';
-
+function draw(fractalCase) {
+    let canvas;
     switch (fractalCase) {
         case 'julia':
-            done = this.myPainter.dibujarJulia();
-            message = done ? 'Julia pintado con Exito' : 'Error pintando Julia';
+            canvas = this.myPainter.dibujarJulia();
             break;
 
         case 'mandelbrot':
-            done = this.myPainter.dibujarMandelbrot();
-            message = done ? 'Mandelbrot pintado con Exito' : 'Error pintando Mandelbrot';
+            canvas = this.myPainter.dibujarMandelbrot();
             break;
 
         case 'random':
-            done = this.myPainter.dibujarJuliaRandom();
-            message = done ? ' pintado con Exito' : 'Error pintando Fractal Aleatorio';
+            cavas = this.myPainter.dibujarJuliaRandom();
             break;
     }
 
+    if (canvas) this.ctx.drawImage(canvas, 0, 0);
     let axis = this.myPainter.getAxis();
     postMessage({
-        done,
-        message,
+        done: true,
         params: {
             a: axis.x,
             b: axis.y

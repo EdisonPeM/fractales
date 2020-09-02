@@ -4,10 +4,11 @@ importScripts('workerUtils/FractalCalculator.js')
 class Painter {
     constructor(realCanvas) {
         // Work with the canvases
-        this.canvas = realCanvas;
-        this.ctx = realCanvas.getContext("2d");;
         this.width = realCanvas.width || 0;
         this.height = realCanvas.height || 0;
+
+        this.canvas = new OffscreenCanvas(this.width, this.height);;
+        this.ctx = this.canvas.getContext("2d");
 
         // Mandelbrot Cache canvas
         this.cnvsM_cache = new OffscreenCanvas(this.width, this.height);
@@ -80,7 +81,7 @@ class Painter {
         this.ctx.fillRect(x, 0, 1, this.height);
         this.ctx.fillRect(0, y, this.width, 1);
 
-        return true;
+        return this.canvas;
     }
 
     dibujarJulia() {
@@ -96,7 +97,7 @@ class Painter {
             this.ctx.drawImage(this.cnvsJ_cache, 0, 0);
         }
 
-        return true;
+        return this.canvas;
     }
 
     // General function to draw
