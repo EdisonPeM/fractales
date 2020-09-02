@@ -34,6 +34,10 @@ class Painter {
     /* ---------------------------- */
     /*      Getters and Setters     */
     /* ---------------------------- */
+    getCanvas() {
+        return this.canvas;
+    }
+
     getAxis() {
         return {
             x: this.x,
@@ -80,8 +84,6 @@ class Painter {
         this.ctx.fillStyle = 'white';
         this.ctx.fillRect(x, 0, 1, this.height);
         this.ctx.fillRect(0, y, this.width, 1);
-
-        return this.canvas;
     }
 
     dibujarJulia() {
@@ -96,8 +98,6 @@ class Painter {
         } else {
             this.ctx.drawImage(this.cnvsJ_cache, 0, 0);
         }
-
-        return this.canvas;
     }
 
     // General function to draw

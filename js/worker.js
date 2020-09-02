@@ -4,7 +4,6 @@ this.myPainter;
 this.currentFractal;
 
 self.onmessage = function (e) {
-    // console.log(e.data);
     switch (e.data.action) {
         case 'init':
             this.ctx = e.data.canvas.getContext("2d");
@@ -44,22 +43,23 @@ self.onmessage = function (e) {
 }
 
 function draw(fractalCase) {
-    let canvas;
     switch (fractalCase) {
-        case 'julia':
-            canvas = this.myPainter.dibujarJulia();
+        case 'mandelbrot':
+            this.myPainter.dibujarMandelbrot();
             break;
 
-        case 'mandelbrot':
-            canvas = this.myPainter.dibujarMandelbrot();
+        case 'julia':
+            this.myPainter.dibujarJulia();
             break;
 
         case 'random':
-            cavas = this.myPainter.dibujarJuliaRandom();
+            this.myPainter.dibujarJuliaRandom();
             break;
     }
 
-    if (canvas) this.ctx.drawImage(canvas, 0, 0);
+    let canvas = this.myPainter.getCanvas()
+    this.ctx.drawImage(canvas, 0, 0);
+
     let axis = this.myPainter.getAxis();
     postMessage({
         done: true,
