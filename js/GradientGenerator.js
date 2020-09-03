@@ -1,25 +1,17 @@
-import colorControl from './colorControl.js'
+import colorControl from './ColorControl.js'
 
 class GradientGenerator {
     initialGradient = [{
-            position: '20',
+            position: '15',
             color: '#ff0000'
         },
         {
             position: '40',
-            color: '#ff7700'
-        },
-        {
-            position: '60',
             color: '#ffff00'
         },
         {
-            position: '80',
-            color: '#77ff77'
-        },
-        {
-            position: '100',
-            color: '#00ffff'
+            position: '70',
+            color: '#00ff77'
         }
     ]
 
@@ -74,7 +66,8 @@ class GradientGenerator {
             }
         })
     }
-    createGradiant() {
+
+    createGradiant(size = 100) {
         let colors = [{
                 color: '#000000',
                 position: 0
@@ -90,11 +83,39 @@ class GradientGenerator {
             }
         ];
 
-        return colorControl.createGradiant(colors, 80);
-    }
+        let response = [];
+        for (let i = 0; i < colors.length - 1; i++) {
+            const color1 = colors[i];
+            const color2 = colors[i + 1];
 
-    getGradientColors() {
-        return
+            let cantSubColors = size * (color2.position - color1.position) / 100
+
+            if (cantSubColors > 0) {
+                if (i === 0) response.push(color1.color);
+
+                let color1RGB = colorControl.hexToRGb(color1.color);
+                let color2RGB = colorControl.hexToRGb(color2.color);
+
+                let deltaRGB = {
+                    red: parseInt((color2RGB.red - color1RGB.red) / cantSubColors),
+                    green: parseInt((color2RGB.green - color1RGB.green) / cantSubColors),
+                    blue: parseInt((color2RGB.blue - color1RGB.blue) / cantSubColors)
+                };
+
+                for (let sc = 1; sc <= cantSubColors; sc++) {
+                    let nextColor = {
+                        red: color1RGB.red + sc * deltaRGB.red,
+                        green: color1RGB.green + sc * deltaRGB.green,
+                        blue: color1RGB.blue + sc * deltaRGB.blue
+                    };
+                    response.push(colorControl.rgbToHex(nextColor));
+                }
+
+                response.push(color2.color);
+            }
+        }
+
+        return response
     }
 
     createGradientColors() {
