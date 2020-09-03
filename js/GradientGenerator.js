@@ -2,7 +2,7 @@ import colorControl from './ColorControl.js'
 
 class GradientGenerator {
     initialGradient = [{
-            position: '15',
+            position: '10',
             color: '#ff0000'
         },
         {
