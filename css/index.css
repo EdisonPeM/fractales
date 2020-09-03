@@ -58,15 +58,15 @@ input[type="range"]:focus {
 }
 
 .btn-colors {
-    background-color: hsl(118, 90%, 50%);
+    background-color: hsl(118, 80%, 50%);
 }
 
 .btn-colors:hover {
-    background-color: hsl(118, 90%, 40%);
+    background-color: hsl(118, 80%, 40%);
 }
 
 .btn-colors:active {
-    background-color: hsl(118, 90%, 30%);
+    background-color: hsl(118, 80%, 30%);
 }
 
 .copyright {

@@ -1,4 +1,3 @@
-import ColorGenerator from './ColorGenerator.js'
 import GradientGenerator from './GradientGenerator.js'
 
 /* ----------------------------------- */
