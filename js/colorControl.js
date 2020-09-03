@@ -96,14 +96,19 @@ class colorControl {
         let rgb1 = colorControl.hexToRGb(hex1);
         let rgb2 = colorControl.hexToRGb(hex2);
 
-        let newRGB = {
-            red: parseInt((rgb2.red + rgb1.red) / 2),
-            green: parseInt((rgb2.green + rgb1.green) / 2),
-            blue: parseInt((rgb2.blue + rgb1.blue) / 2),
-        }
+        let newRGB = colorControl.getIntermediateColorRGB(rgb1, rgb2);
 
         return colorControl.rgbToHex(newRGB);
     }
+
+    static getIntermediateColorRGB(rgb1, rgb2) {
+        return {
+            red: parseInt((rgb2.red + rgb1.red) / 2),
+            green: parseInt((rgb2.green + rgb1.green) / 2),
+            blue: parseInt((rgb2.blue + rgb1.blue) / 2),
+        };
+    }
+
 
     // https://codepen.io/davidhalford/pen/ywEva?editors=0010
     static getCorrectTextColor(hex) {
@@ -123,8 +128,42 @@ class colorControl {
         }
     }
 
-    static createGradiant(colors, steps) {
+    static createGradiant(colors, size) {
+        if (colors.length < 2) return;
 
+        let response = [];
+        for (let i = 0; i < colors.length - 1; i++) {
+            const color1 = colors[i];
+            const color2 = colors[i + 1];
+
+            let cantSubColors = size * (color2.position - color1.position) / 100
+
+            if (cantSubColors > 0) {
+                if (i === 0) {
+                    response.push(color1.color);
+                }
+
+                let color1RGB = colorControl.hexToRGb(color1.color);
+                let color2RGB = colorControl.hexToRGb(color2.color);
+
+                let deltaRGB = {
+                    red: parseInt((color2RGB.red - color1RGB.red) / cantSubColors),
+                    green: parseInt((color2RGB.green - color1RGB.green) / cantSubColors),
+                    blue: parseInt((color2RGB.blue - color1RGB.blue) / cantSubColors)
+                };
+
+                for (let sc = 1; sc <= cantSubColors; sc++) {
+                    let nextColor = {
+                        red: color1RGB.red + sc * deltaRGB.red,
+                        green: color1RGB.green + sc * deltaRGB.green,
+                        blue: color1RGB.blue + sc * deltaRGB.blue
+                    };
+                    response.push(colorControl.rgbToHex(nextColor));
+                }
+                response.push(color2.color);
+            }
+        }
+        return response
     }
 
     static hexToRGb(hex) {

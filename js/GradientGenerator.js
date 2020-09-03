@@ -2,23 +2,23 @@ import colorControl from './colorControl.js'
 
 class GradientGenerator {
     initialGradient = [{
-            position: '10',
+            position: '20',
             color: '#ff0000'
         },
-        // {
-        //     position: '30',
-        //     color: '#ff7700'
-        // },
         {
-            position: '50',
+            position: '40',
+            color: '#ff7700'
+        },
+        {
+            position: '60',
             color: '#ffff00'
         },
-        // {
-        //     position: '70',
-        //     color: '#77ff77'
-        // },
         {
-            position: '90',
+            position: '80',
+            color: '#77ff77'
+        },
+        {
+            position: '100',
             color: '#00ffff'
         }
     ]
@@ -31,10 +31,10 @@ class GradientGenerator {
         })
 
         this.gradientColors = this.createGradientColors();
-        this.saveCache()
+        this.cacheColorsElements = [];
+        this.saveCache();
 
         this.insertColor = false;
-        this.cacheColorsElements = [];
 
         // Event Handler to Add New Color
         this.mainElement.addEventListener('click', (ev) => {
@@ -74,14 +74,27 @@ class GradientGenerator {
             }
         })
     }
+    createGradiant() {
+        let colors = [{
+                color: '#000000',
+                position: 0
+            },
+            ...this.gradientColors.map(gc => {
+                return {
+                    color: gc.getColor(),
+                    position: gc.getPosition()
+                }
+            }), {
+                color: '#ffffff',
+                position: 100
+            }
+        ];
+
+        return colorControl.createGradiant(colors, 80);
+    }
 
     getGradientColors() {
-        return this.gradientColors.map(gc => {
-            return {
-                color: gc.getColor(),
-                position: gc.getPosition()
-            }
-        });
+        return
     }
 
     createGradientColors() {
