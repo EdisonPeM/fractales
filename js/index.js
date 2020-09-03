@@ -29,6 +29,47 @@ parm_a.addEventListener('input', updateOutput);
 parm_b.addEventListener('input', updateOutput);
 
 /* ----------------------------------- */
+/*        Create Color Generator       */
+/* ----------------------------------- */
+const colorsControl = document.querySelector('.gradient-controls');
+const myColorGen = new GradientGenerator(colorsControl);
+window.addEventListener('resize', () => {
+    if (modal.style.display !== 'none') {
+        myColorGen.updateAllPositions()
+    }
+})
+
+/* ----------------------------------- */
+/*        Control of Modal             */
+/* ----------------------------------- */
+const modal = document.querySelector('.modal');
+modal.style.left = 0;
+modal.style.display = 'none';
+
+document.querySelector('#changeColors').addEventListener('click', () => {
+    modal.style.display = '';
+    setTimeout(() => {
+        modal.style.opacity = 1;
+    })
+})
+
+document.querySelector('.close-modal').addEventListener('click', () => {
+    modal.style.opacity = '';
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 200)
+})
+
+document.addEventListener('keyup', (e) => {
+    if (e.code === 'Escape') {
+        modal.style.opacity = '';
+        setTimeout(() => {
+            modal.style.display = 'none';
+        }, 200)
+    }
+})
+
+/* ----------------------------------- */
 /*     Verify Browser Compatibility    */
 /* ----------------------------------- */
 if (!window.OffscreenCanvas) {
@@ -53,52 +94,13 @@ myWorker.postMessage({
 }, [transferCanva]);
 
 /* ----------------------------------- */
-/*        Create Color Generator       */
-/*      And send Colors to worker      */
+/*        send Colors to worker        */
 /* ----------------------------------- */
-const colorsControl = document.querySelector('.gradient-controls');
-const myColorGen = new GradientGenerator(colorsControl);
-window.addEventListener('resize', () => {
-    if (modal.style.display !== 'none') {
-        myColorGen.updateAllPositions()
-    }
-})
-
 const colorGen = new ColorGenerator();
 myWorker.postMessage({
     action: 'setColors',
     colors: colorGen.generateColors()
 });
-
-/* ----------------------------------- */
-/*        Control of Modal             */
-/* ----------------------------------- */
-const modal = document.querySelector('.modal');
-modal.style.display = 'none';
-modal.style.opacity = '0';
-
-document.querySelector('#changeColors').addEventListener('click', () => {
-    modal.style.display = '';
-    setTimeout(() => {
-        modal.style.opacity = 1;
-    })
-})
-
-document.querySelector('.close-modal').addEventListener('click', () => {
-    modal.style.opacity = 0;
-    setTimeout(() => {
-        modal.style.display = 'none';
-    }, 200)
-})
-
-document.addEventListener('keyup', (e) => {
-    if (e.code === 'Escape') {
-        modal.style.opacity = 0;
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 200)
-    }
-})
 
 /* ------------------------------------------ */
 /*    Add Message Event Listener to Worker    */

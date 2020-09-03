@@ -5,16 +5,19 @@ class GradientGenerator {
             position: '10',
             color: '#ff0000'
         },
+        // {
+        //     position: '30',
+        //     color: '#ff7700'
+        // },
         {
-            position: '30',
-            color: '#ff7700'
-        }, {
             position: '50',
             color: '#ffff00'
-        }, {
-            position: '70',
-            color: '#77ff77'
-        }, {
+        },
+        // {
+        //     position: '70',
+        //     color: '#77ff77'
+        // },
+        {
             position: '90',
             color: '#00ffff'
         }
