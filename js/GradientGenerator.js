@@ -31,6 +31,57 @@ class GradientGenerator {
         })
 
         this.gradientColors = this.createGradientColors();
+        this.saveCache()
+
+        this.insertColor = false;
+        this.cacheColorsElements = [];
+
+        // Event Handler to Add New Color
+        this.mainElement.addEventListener('click', (ev) => {
+            if (this.insertColor) {
+                let cantColors = this.gradientColors.length;
+
+                let totalLenght = this.mainElement.getClientRects()[0].width;
+                let newPosition = parseInt(ev.layerX * 100 / totalLenght);
+
+                let newElements = this.gradientColors.map(el => el.parentEl)
+                let indx = this.gradientColors.findIndex(el => el.positionEl.value > newPosition)
+                indx = (indx === -1) ? cantColors : indx;
+
+                let color1 = '#000000';
+                let color2 = '#ffffff';
+
+                if ((indx === cantColors) && (cantColors > 0)) {
+                    color1 = this.gradientColors[cantColors - 1].getColor();
+                } else if ((indx === 0) && (cantColors > 0)) {
+                    color2 = this.gradientColors[0].getColor();
+                } else {
+                    color1 = this.gradientColors[indx - 1].getColor();
+                    color2 = this.gradientColors[indx].getColor();
+                }
+
+                let newColor = colorControl.getIntermediateColor(color1, color2);
+                let newElement = colorControl.createNewControl({
+                    position: newPosition,
+                    color: newColor
+                })
+
+                newElements.splice(indx, 0, newElement);
+                this.updateElements(newElements);
+
+                this.mainElement.classList.remove('add-new');
+                this.insertColor = false;
+            }
+        })
+    }
+
+    getGradientColors() {
+        return this.gradientColors.map(gc => {
+            return {
+                color: gc.getColor(),
+                position: gc.getPosition()
+            }
+        });
     }
 
     createGradientColors() {
@@ -65,6 +116,17 @@ class GradientGenerator {
         });
     }
 
+    updateElements(newElements) {
+        this.gradientColors.forEach(gc => {
+            this.mainElement.removeChild(gc.parentEl);
+        })
+        newElements.forEach(el => this.mainElement.appendChild(el))
+
+        this.gradientColors = this.createGradientColors();
+        this.updatePositionsLimits(this.gradientColors);
+        this.setGradientBg(this.mainElement, this.gradientColors);
+    }
+
     updateAllPositions() {
         this.gradientColors.forEach(c => c.changePosition())
     }
@@ -83,6 +145,27 @@ class GradientGenerator {
             gc.setPositionLimits(minlimit, maxlimit);
             minlimit = gc.getPosition();
         })
+    }
+
+    saveCache() {
+        this.cacheColorsElements = this.gradientColors.map(gc => gc.parentEl);
+    }
+
+    addNewColor() {
+        this.insertColor = true;
+        this.mainElement.classList.add('add-new');
+    }
+
+    cancelNewColors() {
+        this.insertColor = false;
+        this.mainElement.classList.remove('add-new');
+        this.updateElements(this.cacheColorsElements);
+    }
+
+    acceptChangedColors() {
+        this.insertColor = false;
+        this.mainElement.classList.remove('add-new');
+        this.saveCache()
     }
 
     setGradientBg(element, gcs) {

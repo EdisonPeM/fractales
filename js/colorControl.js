@@ -92,23 +92,67 @@ class colorControl {
         return gradientColor
     }
 
+    static getIntermediateColor(hex1, hex2) {
+        let rgb1 = colorControl.hexToRGb(hex1);
+        let rgb2 = colorControl.hexToRGb(hex2);
+
+        let newRGB = {
+            red: parseInt((rgb2.red + rgb1.red) / 2),
+            green: parseInt((rgb2.green + rgb1.green) / 2),
+            blue: parseInt((rgb2.blue + rgb1.blue) / 2),
+        }
+
+        return colorControl.rgbToHex(newRGB);
+    }
+
     // https://codepen.io/davidhalford/pen/ywEva?editors=0010
     static getCorrectTextColor(hex) {
         let threshold = 130; /* about half of 256. Lower threshold equals more dark text on dark background  */
-        function cutHex(h) {
-            return h.charAt(0) == "#" ? h.substring(1, 7) : h;
-        }
 
-        let hRed = parseInt(cutHex(hex).substring(0, 2), 16);
-        let hGreen = parseInt(cutHex(hex).substring(2, 4), 16);
-        let hBlue = parseInt(cutHex(hex).substring(4, 6), 16);
+        let {
+            red,
+            green,
+            blue,
+        } = colorControl.hexToRGb(hex);
 
-        let cBrightness = (hRed * 299 + hGreen * 587 + hBlue * 114) / 1000;
+        let cBrightness = (red * 299 + green * 587 + blue * 114) / 1000;
         if (cBrightness > threshold) {
             return "#000000";
         } else {
             return "#ffffff";
         }
+    }
+
+    static createGradiant(colors, steps) {
+
+    }
+
+    static hexToRGb(hex) {
+        function cutHex(h) {
+            return h.charAt(0) == "#" ? h.substring(1, 7) : h;
+        }
+
+        let red = parseInt(cutHex(hex).substring(0, 2), 16);
+        let green = parseInt(cutHex(hex).substring(2, 4), 16);
+        let blue = parseInt(cutHex(hex).substring(4, 6), 16);
+
+        return {
+            red,
+            green,
+            blue
+        }
+    }
+
+    static rgbToHex(rgb) {
+        let r = rgb.red.toString(16);
+        let g = rgb.green.toString(16);
+        let b = rgb.blue.toString(16);
+
+        if (r.length == 1) r = "0" + r;
+        if (g.length == 1) g = "0" + g;
+        if (b.length == 1) b = "0" + b;
+
+        return "#" + r + g + b;
     }
 }
 

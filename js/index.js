@@ -51,23 +51,45 @@ document.querySelector('#changeColors').addEventListener('click', () => {
     setTimeout(() => {
         modal.style.opacity = 1;
     })
+    myColorGen.updateAllPositions()
 })
 
-document.querySelector('.close-modal').addEventListener('click', () => {
+/* ----------------------------------- */
+/*     Modal Events    */
+/* ----------------------------------- */
+document.querySelector('#add').addEventListener('click', addColor)
+document.querySelector('#accept').addEventListener('click', acceptColorChange)
+document.querySelector('.close-modal').addEventListener('click', cancelColorChange)
+document.addEventListener('keyup', (e) => {
+    if (e.code === 'Escape') {
+        cancelColorChange()
+    }
+
+    if (e.code === 'Enter') {
+        acceptColorChange()
+    }
+})
+
+function addColor() {
+    myColorGen.addNewColor();
+}
+
+function acceptColorChange() {
+    myColorGen.acceptChangedColors();
+    closeModal()
+}
+
+function cancelColorChange() {
+    myColorGen.cancelNewColors();
+    closeModal()
+}
+
+function closeModal() {
     modal.style.opacity = '';
     setTimeout(() => {
         modal.style.display = 'none';
     }, 200)
-})
-
-document.addEventListener('keyup', (e) => {
-    if (e.code === 'Escape') {
-        modal.style.opacity = '';
-        setTimeout(() => {
-            modal.style.display = 'none';
-        }, 200)
-    }
-})
+}
 
 /* ----------------------------------- */
 /*     Verify Browser Compatibility    */
