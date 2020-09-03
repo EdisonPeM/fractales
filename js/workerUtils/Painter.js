@@ -119,4 +119,9 @@ class Painter {
         this.has_cnvsJ_cache = false;
         return this.dibujarJulia();
     }
+
+    cleanCache() {
+        this.has_cnvsM_cache = false;
+        this.has_cnvsJ_cache = false;
+    }
 }

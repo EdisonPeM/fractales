@@ -12,6 +12,7 @@ self.onmessage = function (e) {
 
         case 'setColors':
             this.myPainter.setColors(e.data.colors);
+            this.myPainter.cleanCache()
             break;
 
         case 'changeType':

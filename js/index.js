@@ -55,7 +55,7 @@ document.querySelector('#changeColors').addEventListener('click', () => {
 })
 
 /* ----------------------------------- */
-/*     Modal Events    */
+/*             Modal Events            */
 /* ----------------------------------- */
 document.querySelector('#add').addEventListener('click', addColor)
 document.querySelector('#accept').addEventListener('click', acceptColorChange)
@@ -77,6 +77,14 @@ function addColor() {
 function acceptColorChange() {
     myColorGen.acceptChangedColors();
     closeModal()
+
+    // When accept the colors, repaint the fractals
+    let colors = myColorGen.createGradiant();
+    myWorker.postMessage({
+        action: 'setColors',
+        colors
+    });
+    drawFractal();
 }
 
 function cancelColorChange() {
@@ -118,10 +126,9 @@ myWorker.postMessage({
 /* ----------------------------------- */
 /*        send Colors to worker        */
 /* ----------------------------------- */
-const colorGen = new ColorGenerator();
 myWorker.postMessage({
     action: 'setColors',
-    colors: colorGen.generateColors()
+    colors: myColorGen.createGradiant()
 });
 
 /* ------------------------------------------ */
