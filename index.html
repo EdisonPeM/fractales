@@ -9,7 +9,7 @@
     <title>Fractal - Julia/Mandelbrot</title>
     <link rel="shortcut icon" href="favicon.png" type="image/png">
 
-    <link rel="stylesheet" href="css/index.css">
+    <link rel="stylesheet" href="css/style.css">
 </head>
 
 <body>
@@ -45,10 +45,10 @@
                 <button id="juliaBtn" class="btn">Dibujar Conjunto de Julia</button>
             </div>
             <hr>
-            <div id="output">c = (0.00000) + (0.00000)i</div>
+            <div id="output">c = (0.000) + (0.000)i</div>
             <div class="canva-container">
                 <div class="range" data-min="-2.5" data-max="1">
-                    <input id="parm_a" type="range" value="0" min="-2.5" step="0.00001" max="1" title="0">
+                    <input id="parm_a" type="range" value="0" min="-2.5" step="0.001" max="1" title="0">
                 </div>
                 <div class="blank"></div>
                 <div class="canva">
@@ -58,13 +58,14 @@
                     </div>
                 </div>
                 <div class="range vertical-range" data-min="-1.75" data-max="1.75">
-                    <input id="parm_b" type="range" value="0" min="-1.75" step="0.00001" max="1.75" title="0">
+                    <input id="parm_b" type="range" value="0" min="-1.75" step="0.001" max="1.75" title="0">
                 </div>
             </div>
             <br>
             <small>Para descargar la imagen haga <b>click derecho</b> sobre el fractal y luego <b>Guardar Imagen
                     Cómo</b></small>
             <br>
+            <button id="changeColors" class="btn btn-colors">Cambiar Colores</button>
             <button id="randomBtn" class="btn btn-random">Generar Fractal Aleatorio</button>
             <hr>
             <footer class="copyright">
@@ -72,7 +73,19 @@
             </footer>
         </div>
     </main>
-    <script src="js/index.js"></script>
+    <aside class="modal">
+        <div class="modal-content">
+            <div class="close-modal">X</div>
+            <div class="gradiant-generator">
+                <div class="gradient-controls"></div>
+                <div>
+                    <button id="add" class="btn btn-colors btn-add-new">+</button>
+                    <button id="accept" class="btn btn-to-accept">ok</button>
+                </div>
+            </div>
+        </div>
+    </aside>
+    <script type="module" src="js/index.js"></script>
 </body>
 
 </html>

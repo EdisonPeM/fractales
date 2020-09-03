@@ -1,3 +1,6 @@
+import ColorGenerator from './ColorGenerator.js'
+import GradientGenerator from './GradientGenerator.js'
+
 /* ----------------------------------- */
 /*     Document Fixed Range Styles     */
 /* ----------------------------------- */
@@ -8,26 +11,99 @@ function setRangeSize() {
     parm_b.style.width = parm_a.getClientRects()[0].width + 'px';
 }
 
-if (!window.OffscreenCanvas) {
-    alert('Su navegador no soporta esta aplicación')
-}
-
 document.addEventListener('DOMContentLoaded', setRangeSize)
 window.addEventListener('resize', setRangeSize)
 
 /* ----------------------------------- */
 /*            Update Output            */
 /* ----------------------------------- */
-
-const output = document.getElementById('output')
-
-parm_a.addEventListener('input', updateOutput)
-parm_b.addEventListener('input', updateOutput)
+const output = document.getElementById('output');
 
 function updateOutput() {
     parm_a.title = parm_a.value;
     parm_b.title = parm_b.value;
-    output.innerText = `c = (${(+parm_a.value).toFixed(5)}) + (${(+parm_b.value).toFixed(5)})i`
+    output.innerText = `c = (${(+parm_a.value).toFixed(3)}) + (${(+parm_b.value).toFixed(3)})i`
+}
+
+parm_a.addEventListener('input', updateOutput);
+parm_b.addEventListener('input', updateOutput);
+
+/* ----------------------------------- */
+/*        Create Color Generator       */
+/* ----------------------------------- */
+const colorsControl = document.querySelector('.gradient-controls');
+const myColorGen = new GradientGenerator(colorsControl);
+window.addEventListener('resize', () => {
+    if (modal.style.display !== 'none') {
+        myColorGen.updateAllPositions()
+    }
+})
+
+/* ----------------------------------- */
+/*        Control of Modal             */
+/* ----------------------------------- */
+const modal = document.querySelector('.modal');
+modal.style.left = 0;
+modal.style.display = 'none';
+
+document.querySelector('#changeColors').addEventListener('click', () => {
+    modal.style.display = '';
+    setTimeout(() => {
+        modal.style.opacity = 1;
+    })
+    myColorGen.updateAllPositions()
+})
+
+/* ----------------------------------- */
+/*             Modal Events            */
+/* ----------------------------------- */
+document.querySelector('#add').addEventListener('click', addColor)
+document.querySelector('#accept').addEventListener('click', acceptColorChange)
+document.querySelector('.close-modal').addEventListener('click', cancelColorChange)
+document.addEventListener('keyup', (e) => {
+    if (e.code === 'Escape') {
+        cancelColorChange()
+    }
+
+    if (e.code === 'Enter') {
+        acceptColorChange()
+    }
+})
+
+function addColor() {
+    myColorGen.addNewColor();
+}
+
+function acceptColorChange() {
+    myColorGen.acceptChangedColors();
+    closeModal()
+
+    // When accept the colors, repaint the fractals
+    let colors = myColorGen.createGradiant();
+    myWorker.postMessage({
+        action: 'setColors',
+        colors
+    });
+    drawFractal();
+}
+
+function cancelColorChange() {
+    myColorGen.cancelNewColors();
+    closeModal()
+}
+
+function closeModal() {
+    modal.style.opacity = '';
+    setTimeout(() => {
+        modal.style.display = 'none';
+    }, 200)
+}
+
+/* ----------------------------------- */
+/*     Verify Browser Compatibility    */
+/* ----------------------------------- */
+if (!window.OffscreenCanvas) {
+    alert('Su navegador no soporta esta aplicación')
 }
 
 /* ----------------------------------- */
@@ -36,6 +112,28 @@ function updateOutput() {
 let drawingInProcess = false;
 const spinner = document.getElementById('spinner');
 let myWorker = new Worker("js/worker.js");
+
+/* ----------------------------------- */
+/*      Transfer Canvas to worker      */
+/* ----------------------------------- */
+const miCanva = document.getElementById("miCanva");
+let transferCanva = miCanva.transferControlToOffscreen();
+myWorker.postMessage({
+    action: 'init',
+    canvas: transferCanva
+}, [transferCanva]);
+
+/* ----------------------------------- */
+/*        send Colors to worker        */
+/* ----------------------------------- */
+myWorker.postMessage({
+    action: 'setColors',
+    colors: myColorGen.createGradiant()
+});
+
+/* ------------------------------------------ */
+/*    Add Message Event Listener to Worker    */
+/* ------------------------------------------ */
 myWorker.addEventListener("message", function (oEvent) {
     if (oEvent.data.done) {
         spinner.style.display = 'none'
@@ -51,49 +149,33 @@ myWorker.addEventListener("message", function (oEvent) {
     }
 });
 
-/* ----------------------------------- */
-/*      Transfer Canvas to worker      */
-/* ----------------------------------- */
-const miCanva = document.getElementById("miCanva");
-let transferCanva = miCanva.transferControlToOffscreen()
-
-myWorker.postMessage({
-    action: 'init',
-    canva: transferCanva
-}, [transferCanva]);
-
-/* ----------------------------------- */
-/*        Adding Buttons Events        */
-/* ----------------------------------- */
+/* --------------------------------------- */
+/*    Events to send Messages to Worker    */
+/* --------------------------------------- */
 const juliaBtn = document.getElementById('juliaBtn');
 const mandelbrotBtn = document.getElementById('mandelbrotBtn');
 
-juliaBtn.addEventListener('click', function (ev) {
+function changeFractalType(fractalName) {
     if (drawingInProcess) return;
 
     myWorker.postMessage({
         action: 'changeType',
-        type: 'julia'
+        type: fractalName
     })
-})
+}
 
-mandelbrotBtn.addEventListener('click', function (ev) {
-    if (drawingInProcess) return;
-
-    myWorker.postMessage({
-        action: 'changeType',
-        type: 'mandelbrot'
-    })
-})
+juliaBtn.addEventListener('click', () => changeFractalType('julia'))
+mandelbrotBtn.addEventListener('click', () => changeFractalType('mandelbrot'))
 
 /* ----------------------------------- */
 /*        Send Messages to draw        */
 /* ----------------------------------- */
 function drawFractal() {
     if (drawingInProcess) return;
-
     drawingInProcess = true;
-    setTimeout(function () {
+
+    // Use SetTimeOut to wait the worker response message
+    setTimeout(() => {
         if (drawingInProcess) {
             spinner.style.display = ''
         }
@@ -114,6 +196,9 @@ parm_b.addEventListener('change', drawFractal);
 juliaBtn.addEventListener('click', drawFractal);
 mandelbrotBtn.addEventListener('click', drawFractal);
 
+/* ---------------------------------------- */
+/*     Messages to change axis on input     */
+/* ---------------------------------------- */
 function changeAxis() {
     if (drawingInProcess) return;
 
@@ -136,9 +221,10 @@ parm_b.addEventListener('input', changeAxis);
 const randomBtn = document.getElementById('randomBtn');
 randomBtn.addEventListener('click', function (ev) {
     if (drawingInProcess) return;
-
     drawingInProcess = true;
-    setTimeout(function () {
+
+    // Use SetTimeOut to wait the worker response message
+    setTimeout(() => {
         if (drawingInProcess) {
             spinner.style.display = ''
         }

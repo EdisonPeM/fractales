@@ -1,85 +1,72 @@
-self.importScripts('./painter.js')
-self.importScripts('./colors.js')
+self.importScripts('workerUtils/Painter.js')
 
-let ctx;
-let myPainter;
-let fractalName;
+this.myPainter;
+this.currentFractal;
 
 self.onmessage = function (e) {
-    // console.log(e.data);
     switch (e.data.action) {
         case 'init':
-            let canva = e.data.canva;
-            ctx = canva.getContext("2d");
+            this.ctx = e.data.canvas.getContext("2d");
+            this.myPainter = new Painter(e.data.canvas);
+            break;
 
-            myPainter = new Painter(canva.width, canva.height, colors);
+        case 'setColors':
+            this.myPainter.setColors(e.data.colors);
+            this.myPainter.cleanCache()
             break;
 
         case 'changeType':
-            fractalName = e.data.type;
+            this.currentFractal = e.data.type;
             break
 
         case 'draw':
-            pintar(fractalName)
+            draw(this.currentFractal)
             break;
 
         case 'changeAxis':
-            myPainter.setParams(e.data.params)
+            this.myPainter.setAxis({
+                x: e.data.params.a,
+                y: e.data.params.b
+            })
 
             // Only Madelbrot show axis
-            if (fractalName === 'mandelbrot') pintar('mandelbrot')
+            if (this.currentFractal === 'mandelbrot')
+                draw('mandelbrot')
+
             break;
 
         case 'random':
-            fractalName = 'julia';
-            pintar('random')
+            // Random fractal works on Julia Set
+            this.currentFractal = 'julia';
+            draw('random')
             break;
     }
 }
 
-function pintar(fractalCase) {
+function draw(fractalCase) {
     switch (fractalCase) {
-        case 'julia':
-            let cnvsJ = myPainter.dibujarJulia();
-            ctx.drawImage(cnvsJ, 0, 0);
-
-            postMessage({
-                message: 'Julia pintado con Exito',
-                params: myPainter.getParams(),
-                done: true
-            });
-
+        case 'mandelbrot':
+            this.myPainter.dibujarMandelbrot();
             break;
 
-        case 'mandelbrot':
-            let cnvsM = myPainter.dibujarMandelbrot();
-            ctx.drawImage(cnvsM, 0, 0);
-
-            postMessage({
-                message: 'Mandelbrot pintado con Exito',
-                params: myPainter.getParams(),
-                done: true
-            });
-
+        case 'julia':
+            this.myPainter.dibujarJulia();
             break;
 
         case 'random':
-            let cnvsR = myPainter.dibujarJuliaRandom();
-            ctx.drawImage(cnvsR, 0, 0);
-
-            postMessage({
-                message: 'Fractal Aleatorio pintado con Exito',
-                params: myPainter.getParams(),
-                done: true
-            });
-
-            break;
-
-        default:
-            postMessage({
-                message: 'No se pintó nada',
-                done: true
-            });
+            this.myPainter.dibujarJuliaRandom();
             break;
     }
+
+    let canvas = this.myPainter.getCanvas()
+    this.ctx.drawImage(canvas, 0, 0);
+
+    let axis = this.myPainter.getAxis();
+    postMessage({
+        done: true,
+        params: {
+            a: axis.x,
+            b: axis.y
+        }
+    });
 }

@@ -20,6 +20,7 @@ body {
     font-size: 1em;
     color: white;
     background-color: hsl(229, 77%, 55%);
+    vertical-align: top;
 
     padding: 1em;
     border: none;
@@ -54,6 +55,18 @@ input[type="range"]:focus {
 
 .btn-random:active {
     background-color: hsl(39, 90%, 35%);
+}
+
+.btn-colors {
+    background-color: hsl(118, 90%, 50%);
+}
+
+.btn-colors:hover {
+    background-color: hsl(118, 90%, 40%);
+}
+
+.btn-colors:active {
+    background-color: hsl(118, 90%, 30%);
 }
 
 .copyright {
@@ -130,7 +143,15 @@ input[type="range"]:focus {
 
 .vertical-range::after,
 .vertical-range::before {
-    left: 2em;
+    left: 0;
+}
+
+.vertical-range::after {
+    top: -1em;
+}
+
+.vertical-range::before {
+    bottom: -1.5em;
 }
 
 .range:not(.vertical-range)::after {
@@ -140,6 +161,21 @@ input[type="range"]:focus {
 
 .range:not(.vertical-range)::before {
     top: -0.5em;
+}
+
+@media (min-width: 768px) {
+    .vertical-range::after {
+        top: 0;
+    }
+
+    .vertical-range::before {
+        bottom: 0;
+    }
+
+    .vertical-range::after,
+    .vertical-range::before {
+        left: 2em;
+    }
 }
 
 /* ------------------------------ */
