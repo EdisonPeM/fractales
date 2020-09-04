@@ -1,15 +1,26 @@
 class colorControl {
-    constructor(element) {
-        this.parentEl = element;
-        this.deleteEl = element.children[0];
-        this.positionEl = element.children[1];
-        this.valueEl = element.children[2];
+    constructor(obj) {
+        this.mainElement = document.createElement('div');
+        this.mainElement.className = "gradient-color";
 
-        // Update Element view
-        this.changeBg();
-        this.changePosition();
+        // Create delete button
+        this.deleteEl = document.createElement('button');
+        this.deleteEl.className = 'color-delete';
+        this.deleteEl.textContent = 'X';
+        this.deleteEl.addEventListener('click', (ev) => {
+            this.mainElement.remove();
+        });
 
-        // Add Elements basic Listeners
+        // Create position range input
+        this.positionEl = document.createElement('input');
+        this.positionEl.className = 'color-position';
+        this.positionEl.type = 'range';
+        this.positionEl.min = 0;
+        this.positionEl.max = 100;
+        this.positionEl.dataset.min = 0;
+        this.positionEl.dataset.max = 100;
+        this.positionEl.value = obj.position;
+
         this.positionEl.addEventListener('input', function (ev) {
             if (+this.value < +this.dataset.min)
                 this.value = this.dataset.min;
@@ -17,19 +28,32 @@ class colorControl {
             if (+this.value > +this.dataset.max)
                 this.value = this.dataset.max;
         });
-
         this.positionEl.addEventListener('input', () => {
             this.changePosition();
         });
 
+        // Create value color input
+        this.valueEl = document.createElement('input');
+        this.valueEl.className = 'color-value';
+        this.valueEl.type = 'color';
+        this.valueEl.value = obj.color;
         this.valueEl.addEventListener('input', () => {
             this.changeBg();
         });
+
+        // Add sub elements to main Element
+        this.mainElement.appendChild(this.deleteEl);
+        this.mainElement.appendChild(this.positionEl);
+        this.mainElement.appendChild(this.valueEl);
+
+        // Update Element view
+        this.changeBg();
+        this.changePosition();
     }
 
     // Getters
-    getParent() {
-        return this.parentEl;
+    getElement() {
+        return this.mainElement;
     }
 
     getColor() {
@@ -70,45 +94,25 @@ class colorControl {
 
     changePosition() {
         let pos = this.positionEl.value
-        let totalLenght = this.positionEl.getClientRects()[0].width;
+        let totalLenght = this.positionEl.clientWidth;
         let left = `${(totalLenght - 15) * pos / 100 + 15/2}px`;
 
         this.deleteEl.style.left = left;
         this.valueEl.style.left = left;
     }
 
-    // Static Utilities
-    static createNewControl({
-        position,
-        color
-    }) {
-        let gradientColor = document.createElement('div')
-        gradientColor.className = "gradient-color"
-        gradientColor.innerHTML = `
-            <button class="color-delete">X</button>
-            <input class="color-position" type="range" value="${position}" min="0" max="100" step="1">
-            <input class="color-value" type="color" value="${color}">
-        `
-        return gradientColor
-    }
-
     static getIntermediateColor(hex1, hex2) {
         let rgb1 = colorControl.hexToRGb(hex1);
         let rgb2 = colorControl.hexToRGb(hex2);
 
-        let newRGB = colorControl.getIntermediateColorRGB(rgb1, rgb2);
-
-        return colorControl.rgbToHex(newRGB);
-    }
-
-    static getIntermediateColorRGB(rgb1, rgb2) {
-        return {
+        let newRGB = {
             red: parseInt((rgb2.red + rgb1.red) / 2),
             green: parseInt((rgb2.green + rgb1.green) / 2),
             blue: parseInt((rgb2.blue + rgb1.blue) / 2),
         };
-    }
 
+        return colorControl.rgbToHex(newRGB);
+    }
 
     // https://codepen.io/davidhalford/pen/ywEva?editors=0010
     static getCorrectTextColor(hex) {
