@@ -117,14 +117,12 @@ class Painter {
         let n = 0;
         await new Promise((resolve) => {
             for (let j = 0; j < this.height; j++) {
-                new Promise(() => {
-                    setTimeout(() => {
-                        for (let i = 0; i < this.width; i++) {
-                            n = funcionFractal(i, j);
-                            this.ctx.fillStyle = this.colors[n];
-                            this.ctx.fillRect(i, j, 1, 1);
-                        }
-                    });
+                setTimeout(() => {
+                    for (let i = 0; i < this.width; i++) {
+                        n = funcionFractal(i, j);
+                        this.ctx.fillStyle = this.colors[n];
+                        this.ctx.fillRect(i, j, 1, 1);
+                    }
                 });
             }
             setTimeout(() => resolve(true));
