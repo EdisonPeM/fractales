@@ -121,7 +121,8 @@ let myWorker = new Worker('js/worker.js');
 /* ----------------------------------- */
 const miCanva = document.getElementById('miCanva');
 let transferCanva = miCanva.transferControlToOffscreen();
-myWorker.postMessage({
+myWorker.postMessage(
+    {
         action: 'init',
         canvas: transferCanva,
     },
@@ -233,7 +234,6 @@ randomBtn.addEventListener('click', function (ev) {
 let zoomInAction = false;
 let zoomOutAction = false;
 let moveAction = false;
-let homeAction = false;
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
@@ -267,7 +267,6 @@ miCanva.addEventListener('click', function (ev) {
     if (ev.ctrlKey || zoomInAction) action = 'zoom-in';
     if (ev.shiftKey || zoomOutAction) action = 'zoom-out';
     if ((ev.ctrlKey && ev.shiftKey) || moveAction) action = 'move';
-    if (homeAction) action = 'zoom-default'
 
     if (action == 'none') return;
     if (drawingInProcess) return;
@@ -282,16 +281,15 @@ miCanva.addEventListener('click', function (ev) {
     });
 });
 
-let zoomIn = document.getElementById('zoom-in')
-let zoomOut = document.getElementById('zoom-out')
-let zoomMove = document.getElementById('zoom-move')
-let zoomHome = document.getElementById('zoom-home')
+let zoomIn = document.getElementById('zoom-in');
+let zoomOut = document.getElementById('zoom-out');
+let zoomMove = document.getElementById('zoom-move');
+let zoomHome = document.getElementById('zoom-home');
 
 zoomIn.addEventListener('click', function () {
     zoomInAction = true;
     zoomOutAction = false;
     moveAction = false;
-    homeAction = false;
 
     zoomIn.classList.add('active');
     zoomOut.classList.remove('active');
@@ -300,52 +298,57 @@ zoomIn.addEventListener('click', function () {
     miCanva.classList.add('zoom-in');
     miCanva.classList.remove('zoom-out');
     miCanva.classList.remove('move');
-})
+});
 
 zoomOut.addEventListener('click', function () {
     zoomInAction = false;
     zoomOutAction = true;
     moveAction = false;
-    homeAction = false;
 
-    zoomIn.classList.remove('active')
-    zoomOut.classList.add('active')
-    zoomMove.classList.remove('active')
+    zoomIn.classList.remove('active');
+    zoomOut.classList.add('active');
+    zoomMove.classList.remove('active');
 
     miCanva.classList.remove('zoom-in');
     miCanva.classList.add('zoom-out');
     miCanva.classList.remove('move');
-})
+});
 
 zoomMove.addEventListener('click', function () {
     zoomInAction = false;
     zoomOutAction = false;
     moveAction = true;
-    homeAction = false;
 
-    zoomIn.classList.remove('active')
-    zoomOut.classList.remove('active')
-    zoomMove.classList.add('active')
+    zoomIn.classList.remove('active');
+    zoomOut.classList.remove('active');
+    zoomMove.classList.add('active');
 
     miCanva.classList.remove('zoom-in');
     miCanva.classList.remove('zoom-out');
     miCanva.classList.add('move');
-})
+});
 
 zoomHome.addEventListener('click', function () {
     zoomInAction = false;
     zoomOutAction = false;
     moveAction = false;
-    homeAction = true;
 
-    zoomIn.classList.remove('active')
-    zoomOut.classList.remove('active')
-    zoomMove.classList.remove('active')
+    zoomIn.classList.remove('active');
+    zoomOut.classList.remove('active');
+    zoomMove.classList.remove('active');
 
     miCanva.classList.remove('zoom-in');
     miCanva.classList.remove('zoom-out');
     miCanva.classList.remove('move');
-})
+
+    if (drawingInProcess) return;
+    startDraw();
+
+    myWorker.postMessage({
+        action: 'zoom-default',
+        center: { x: 0, y: 0 },
+    });
+});
 
 miCanva.addEventListener('click', function () {
     zoomIn.classList.remove('active');
@@ -355,8 +358,7 @@ miCanva.addEventListener('click', function () {
     miCanva.classList.remove('zoom-in');
     miCanva.classList.remove('zoom-out');
     miCanva.classList.remove('move');
-})
-
+});
 
 /* ----------------------------------- */
 /*              Utilities              */

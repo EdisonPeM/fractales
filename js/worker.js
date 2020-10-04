@@ -49,6 +49,10 @@ self.onmessage = function (e) {
         case 'move':
             zoom(e.data.center, 1);
             break;
+
+        case 'zoom-default':
+            zoom(e.data.center, 0);
+            break;
     }
 };
 

@@ -1,18 +1,23 @@
 class FractalCalculator {
     defaultValues = {
-        xmin: -1.5,
-        ymin: -1.5,
-        xmax: 1.5,
-        ymax: 1.5,
+        julia: {
+            xmin: -1.5,
+            ymin: -1.5,
+            xmax: 1.5,
+            ymax: 1.5,
+        },
 
-        amin: -2.5,
-        bmin: -1.75,
-        amax: 1,
-        bmax: 1.75,
+        mandelbrot: {
+            amin: -2.5,
+            bmin: -1.75,
+            amax: 1,
+            bmax: 1.75,
+        },
     };
 
     constructor(q, p, N) {
-        this.setValues(this.defaultValues);
+        this.setValues(this.defaultValues.julia);
+        this.setValues(this.defaultValues.mandelbrot);
 
         // Number of Iterations
         this.M = 100;
@@ -41,33 +46,41 @@ class FractalCalculator {
     }
 
     zoomXY(x, y, factor = 1) {
-        let xn = this.xmin + x * this.dx;
-        let yn = this.ymax - y * this.dy;
+        if (factor === 0) {
+            this.setValues(this.defaultValues.julia);
+        } else {
+            let xn = this.xmin + x * this.dx;
+            let yn = this.ymax - y * this.dy;
 
-        let tx = (this.xmax - this.xmin) / 2;
-        let ty = (this.ymax - this.ymin) / 2;
+            let tx = (this.xmax - this.xmin) / 2;
+            let ty = (this.ymax - this.ymin) / 2;
 
-        this.xmin = xn - tx * factor;
-        this.xmax = xn + tx * factor;
+            this.xmin = xn - tx * factor;
+            this.xmax = xn + tx * factor;
 
-        this.ymin = yn - ty * factor;
-        this.ymax = yn + ty * factor;
+            this.ymin = yn - ty * factor;
+            this.ymax = yn + ty * factor;
+        }
 
         this.setDz(this.q, this.p);
     }
 
     zoomAB(a, b, factor) {
-        let an = this.amin + a * this.da;
-        let bn = this.bmin + b * this.db;
+        if (factor === 0) {
+            this.setValues(this.defaultValues.mandelbrot);
+        } else {
+            let an = this.amin + a * this.da;
+            let bn = this.bmin + b * this.db;
 
-        let ta = (this.amax - this.amin) / 2;
-        let tb = (this.bmax - this.bmin) / 2;
+            let ta = (this.amax - this.amin) / 2;
+            let tb = (this.bmax - this.bmin) / 2;
 
-        this.amin = an - ta * factor;
-        this.amax = an + ta * factor;
+            this.amin = an - ta * factor;
+            this.amax = an + ta * factor;
 
-        this.bmin = bn - tb * factor;
-        this.bmax = bn + tb * factor;
+            this.bmin = bn - tb * factor;
+            this.bmax = bn + tb * factor;
+        }
 
         this.setDa(this.q, this.p);
     }
