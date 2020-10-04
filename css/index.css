@@ -94,6 +94,18 @@ input[type='range']:focus {
     justify-content: center;
 }
 
+.zoom-in {
+    cursor: zoom-in;
+}
+
+.zoom-out {
+    cursor: zoom-out;
+}
+
+.move {
+    cursor: crosshair;
+}
+
 .range input {
     width: 100%;
 }

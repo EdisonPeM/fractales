@@ -121,6 +121,36 @@ let myWorker = new Worker('js/worker.js');
 /* ----------------------------------- */
 const miCanva = document.getElementById('miCanva');
 
+let ctrlKeyPessed = false;
+let shiftKeyKeyPessed = false;
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+        ctrlKeyPessed = true;
+    }
+
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        shiftKeyKeyPessed = true;
+    }
+
+    if (ctrlKeyPessed) miCanva.classList.add('zoom-in');
+    if (shiftKeyKeyPessed) miCanva.classList.add('zoom-out');
+    if (ctrlKeyPessed && shiftKeyKeyPessed) miCanva.classList.add('move');
+});
+
+document.addEventListener('keyup', (e) => {
+    if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+        ctrlKeyPessed = false;
+    }
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        shiftKeyKeyPessed = false;
+    }
+
+    if (!ctrlKeyPessed) miCanva.classList.remove('zoom-in');
+    if (!shiftKeyKeyPessed) miCanva.classList.remove('zoom-out');
+    if (!ctrlKeyPessed || !shiftKeyKeyPessed) miCanva.classList.remove('move');
+});
+
 let transferCanva = miCanva.transferControlToOffscreen();
 myWorker.postMessage(
     {
