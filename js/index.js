@@ -121,8 +121,7 @@ let myWorker = new Worker('js/worker.js');
 /* ----------------------------------- */
 const miCanva = document.getElementById('miCanva');
 let transferCanva = miCanva.transferControlToOffscreen();
-myWorker.postMessage(
-    {
+myWorker.postMessage({
         action: 'init',
         canvas: transferCanva,
     },
@@ -231,41 +230,44 @@ randomBtn.addEventListener('click', function (ev) {
 /* ----------------------------------- */
 /*           Messages to Zoom          */
 /* ----------------------------------- */
-let ctrlKeyPessed = false;
-let shiftKeyKeyPessed = false;
+let zoomInAction = false;
+let zoomOutAction = false;
+let moveAction = false;
+let homeAction = false;
 
 document.addEventListener('keydown', (e) => {
     if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
-        ctrlKeyPessed = true;
+        zoomInAction = true;
     }
 
     if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        shiftKeyKeyPessed = true;
+        zoomOutAction = true;
     }
 
-    if (ctrlKeyPessed) miCanva.classList.add('zoom-in');
-    if (shiftKeyKeyPessed) miCanva.classList.add('zoom-out');
-    if (ctrlKeyPessed && shiftKeyKeyPessed) miCanva.classList.add('move');
+    if (zoomInAction) miCanva.classList.add('zoom-in');
+    if (zoomOutAction) miCanva.classList.add('zoom-out');
+    if (zoomInAction && zoomOutAction) miCanva.classList.add('move');
 });
 
 document.addEventListener('keyup', (e) => {
     if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
-        ctrlKeyPessed = false;
+        zoomInAction = false;
     }
     if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        shiftKeyKeyPessed = false;
+        zoomOutAction = false;
     }
 
-    if (!ctrlKeyPessed) miCanva.classList.remove('zoom-in');
-    if (!shiftKeyKeyPessed) miCanva.classList.remove('zoom-out');
-    if (!ctrlKeyPessed || !shiftKeyKeyPessed) miCanva.classList.remove('move');
+    if (!zoomInAction) miCanva.classList.remove('zoom-in');
+    if (!zoomOutAction) miCanva.classList.remove('zoom-out');
+    if (!zoomInAction || !zoomOutAction) miCanva.classList.remove('move');
 });
 
 miCanva.addEventListener('click', function (ev) {
     let action = 'none';
-    if (ev.ctrlKey) action = 'zoom-in';
-    if (ev.shiftKey) action = 'zoom-out';
-    if (ev.ctrlKey && ev.shiftKey) action = 'move';
+    if (ev.ctrlKey || zoomInAction) action = 'zoom-in';
+    if (ev.shiftKey || zoomOutAction) action = 'zoom-out';
+    if ((ev.ctrlKey && ev.shiftKey) || moveAction) action = 'move';
+    if (homeAction) action = 'zoom-default'
 
     if (action == 'none') return;
     if (drawingInProcess) return;
@@ -279,6 +281,82 @@ miCanva.addEventListener('click', function (ev) {
         },
     });
 });
+
+let zoomIn = document.getElementById('zoom-in')
+let zoomOut = document.getElementById('zoom-out')
+let zoomMove = document.getElementById('zoom-move')
+let zoomHome = document.getElementById('zoom-home')
+
+zoomIn.addEventListener('click', function () {
+    zoomInAction = true;
+    zoomOutAction = false;
+    moveAction = false;
+    homeAction = false;
+
+    zoomIn.classList.add('active');
+    zoomOut.classList.remove('active');
+    zoomMove.classList.remove('active');
+
+    miCanva.classList.add('zoom-in');
+    miCanva.classList.remove('zoom-out');
+    miCanva.classList.remove('move');
+})
+
+zoomOut.addEventListener('click', function () {
+    zoomInAction = false;
+    zoomOutAction = true;
+    moveAction = false;
+    homeAction = false;
+
+    zoomIn.classList.remove('active')
+    zoomOut.classList.add('active')
+    zoomMove.classList.remove('active')
+
+    miCanva.classList.remove('zoom-in');
+    miCanva.classList.add('zoom-out');
+    miCanva.classList.remove('move');
+})
+
+zoomMove.addEventListener('click', function () {
+    zoomInAction = false;
+    zoomOutAction = false;
+    moveAction = true;
+    homeAction = false;
+
+    zoomIn.classList.remove('active')
+    zoomOut.classList.remove('active')
+    zoomMove.classList.add('active')
+
+    miCanva.classList.remove('zoom-in');
+    miCanva.classList.remove('zoom-out');
+    miCanva.classList.add('move');
+})
+
+zoomHome.addEventListener('click', function () {
+    zoomInAction = false;
+    zoomOutAction = false;
+    moveAction = false;
+    homeAction = true;
+
+    zoomIn.classList.remove('active')
+    zoomOut.classList.remove('active')
+    zoomMove.classList.remove('active')
+
+    miCanva.classList.remove('zoom-in');
+    miCanva.classList.remove('zoom-out');
+    miCanva.classList.remove('move');
+})
+
+miCanva.addEventListener('click', function () {
+    zoomIn.classList.remove('active');
+    zoomOut.classList.remove('active');
+    zoomMove.classList.remove('active');
+
+    miCanva.classList.remove('zoom-in');
+    miCanva.classList.remove('zoom-out');
+    miCanva.classList.remove('move');
+})
+
 
 /* ----------------------------------- */
 /*              Utilities              */
