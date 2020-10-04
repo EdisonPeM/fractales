@@ -58,7 +58,7 @@ class FractalCalculator {
 
     zoomAB(a, b, factor) {
         let an = this.amin + a * this.da;
-        let bn = this.bmax - b * this.db;
+        let bn = this.bmin + b * this.db;
 
         let ta = (this.amax - this.amin) / 2;
         let tb = (this.bmax - this.bmin) / 2;
