@@ -30,13 +30,24 @@ self.onmessage = function (e) {
 
             // Only Madelbrot show axis
             if (this.currentFractal === 'mandelbrot') draw('mandelbrot');
-
             break;
 
         case 'random':
             // Random fractal works on Julia Set
             this.currentFractal = 'julia';
             draw('random');
+            break;
+
+        case 'zoom-in':
+            zoom(e.data.center, 0.5);
+            break;
+
+        case 'zoom-out':
+            zoom(e.data.center, 2);
+            break;
+
+        case 'move':
+            zoom(e.data.center, 1);
             break;
     }
 };
@@ -62,5 +73,17 @@ async function drawFractal(fractalCase) {
             return this.myPainter.dibujarJulia();
         case 'random':
             return this.myPainter.dibujarJuliaRandom();
+        default:
+            return true;
     }
+}
+
+function zoom(pointCenter, scale) {
+    if (this.currentFractal == 'mandelbrot')
+        this.myPainter.zoomM(pointCenter, scale);
+
+    if (this.currentFractal == 'julia')
+        this.myPainter.zoomJ(pointCenter, scale);
+
+    draw(this.currentFractal);
 }

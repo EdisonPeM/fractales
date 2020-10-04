@@ -151,6 +151,25 @@ document.addEventListener('keyup', (e) => {
     if (!ctrlKeyPessed || !shiftKeyKeyPessed) miCanva.classList.remove('move');
 });
 
+miCanva.addEventListener('click', function (ev) {
+    let action = 'none';
+    if (ev.ctrlKey) action = 'zoom-in';
+    if (ev.shiftKey) action = 'zoom-out';
+    if (ev.ctrlKey && ev.shiftKey) action = 'move';
+
+    if (action == 'none') return;
+    if (drawingInProcess) return;
+    startDraw();
+
+    myWorker.postMessage({
+        action,
+        center: {
+            x: (ev.offsetX * miCanva.width) / miCanva.clientWidth,
+            y: (ev.offsetY * miCanva.height) / miCanva.clientHeight,
+        },
+    });
+});
+
 let transferCanva = miCanva.transferControlToOffscreen();
 myWorker.postMessage(
     {
