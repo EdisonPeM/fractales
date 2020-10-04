@@ -1,24 +1,75 @@
 class FractalCalculator {
-    constructor(q, p, N) {
-        // coords to Julia
-        this.xmin = -1.5;
-        this.ymin = -1.5;
-        this.xmax = 1.5;
-        this.ymax = 1.5;
+    defaultValues = {
+        xmin: -1.5,
+        ymin: -1.5,
+        xmax: 1.5,
+        ymax: 1.5,
 
-        // coords to Mandelbrot
-        this.amin = -2.5;
-        this.bmin = -1.75;
-        this.amax = 1;
-        this.bmax = 1.75;
+        amin: -2.5,
+        bmin: -1.75,
+        amax: 1,
+        bmax: 1.75,
+    };
+
+    constructor(q, p, N) {
+        this.setValues(this.defaultValues);
 
         // Number of Iterations
         this.M = 100;
+
+        this.q = q;
+        this.p = p;
 
         // Set params
         this.setDz(q, p);
         this.setDa(q, p);
         this.setN(N);
+    }
+
+    setValues(values) {
+        // coords to Julia
+        if (values.xmin) this.xmin = values.xmin;
+        if (values.ymin) this.ymin = values.ymin;
+        if (values.xmax) this.xmax = values.xmax;
+        if (values.ymax) this.ymax = values.ymax;
+
+        // coords to Mandelbrot
+        if (values.amin) this.amin = values.amin;
+        if (values.bmin) this.bmin = values.bmin;
+        if (values.amax) this.amax = values.amax;
+        if (values.bmax) this.bmax = values.bmax;
+    }
+
+    zoomXY(x, y, factor = 1) {
+        let xn = this.xmin + x * this.dx;
+        let yn = this.ymax - y * this.dy;
+
+        let tx = (this.xmax - this.xmin) / 2;
+        let ty = (this.ymax - this.ymin) / 2;
+
+        this.xmin = xn - tx * factor; // + fx;
+        this.xmax = xn + tx * factor; // - fx;
+
+        this.ymin = yn - ty * factor; // + fy;
+        this.ymax = yn + ty * factor; // - fy;
+
+        this.setDz(this.q, this.p);
+    }
+
+    zoomAB(a, b, factor) {
+        let an = this.amin + a * this.da;
+        let bn = this.bmax - b * this.db;
+
+        let ta = (this.amax - this.amin) / 2;
+        let tb = (this.bmax - this.bmin) / 2;
+
+        this.amin = an - ta * factor;
+        this.amax = an + ta * factor;
+
+        this.bmin = bn - tb * factor;
+        this.bmax = bn + tb * factor;
+
+        this.setDa(this.q, this.p);
     }
 
     setDz(q, p) {
@@ -40,16 +91,16 @@ class FractalCalculator {
     /* ----------------------------------- */
     calculateAxis(x, y, q, p) {
         return {
-            x: q * (x - this.amin) / (this.amax - this.amin),
-            y: p - p * (y - this.bmin) / (this.bmax - this.bmin)
-        }
+            x: (q * (x - this.amin)) / (this.amax - this.amin),
+            y: p - (p * (y - this.bmin)) / (this.bmax - this.bmin),
+        };
     }
 
     generateRandomAxis() {
         return {
             x: Math.random() * (this.xmax - this.xmin) + this.xmin,
-            y: Math.random() * (this.ymax - this.ymin) + this.ymin
-        }
+            y: Math.random() * (this.ymax - this.ymin) + this.ymin,
+        };
     }
 
     /* ----------------------------------- */
@@ -71,25 +122,26 @@ class FractalCalculator {
 
         // Iterate the function
         do {
-            let zx1 = this.xn_1(zx, zy, an)
-            let zy1 = this.yn_1(zx, zy, bn)
-            r = this.rn(zx1, zy1)
+            let zx1 = this.xn_1(zx, zy, an);
+            let zy1 = this.yn_1(zx, zy, bn);
+            r = this.rn(zx1, zy1);
 
             n++;
-            zx = zx1
-            zy = zy1
+            zx = zx1;
+            zy = zy1;
         } while (r <= this.M && n < this.N);
 
         // Fixed Colors overflow
         if (n >= this.N) n = 0;
-        return n
+        return n;
     }
 
     // Julia Algirhtm
     calculateJulia(a, b, px_x, px_y) {
         // Calculate each value of z per pixel
         let xn = this.xmin + px_x * this.dx;
-        let yn = this.ymin + px_y * this.dy;
+        let yn = this.ymax - px_y * this.dy;
+        // let yn = this.ymin + px_y * this.dy;
 
         // Initialize controls
         let n = 0;
@@ -97,18 +149,18 @@ class FractalCalculator {
 
         // Iterate the function
         do {
-            let xn1 = this.xn_1(xn, yn, a)
-            let yn1 = this.yn_1(xn, yn, b)
+            let xn1 = this.xn_1(xn, yn, a);
+            let yn1 = this.yn_1(xn, yn, b);
             r = this.rn(xn1, yn1);
 
             n++;
-            xn = xn1
-            yn = yn1
+            xn = xn1;
+            yn = yn1;
         } while (r <= this.M && n < this.N);
 
         // Fixed Colors overflow
         if (n >= this.N) n = 0;
-        return n
+        return n;
     }
 
     /* ---------------------------- */
@@ -116,16 +168,16 @@ class FractalCalculator {
     /* ---------------------------- */
     // Cuadratic Real Part
     xn_1(x, y, a) {
-        return Math.pow(x, 2) - Math.pow(y, 2) + a
+        return Math.pow(x, 2) - Math.pow(y, 2) + a;
     }
 
     // Cuadratic Imaginary Part
     yn_1(x, y, b) {
-        return 2 * x * y + b
+        return 2 * x * y + b;
     }
 
     // Radius^2 of a vector
     rn(x, y) {
-        return Math.pow(x, 2) + Math.pow(y, 2)
+        return Math.pow(x, 2) + Math.pow(y, 2);
     }
 }

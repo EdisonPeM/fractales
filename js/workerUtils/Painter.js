@@ -141,4 +141,14 @@ class Painter {
         this.has_cnvsM_cache = false;
         this.has_cnvsJ_cache = false;
     }
+
+    zoomM({ x, y }, factor) {
+        this.myCalc.zoomAB(x, y, factor);
+        this.has_cnvsM_cache = false;
+    }
+
+    zoomJ({ x, y }, factor) {
+        this.myCalc.zoomXY(x, y, factor);
+        this.has_cnvsJ_cache = false;
+    }
 }
