@@ -270,16 +270,38 @@ input[type='range']:focus {
 }
 
 .zoom-controls button:hover {
-    background-color: #bbb;
+    opacity: 1;
+    background-color: #777;
     color: white;
 }
 
 .zoom-controls button:active,
 .zoom-controls button.active {
-    background-color: #777;
+    opacity: 1;
+    background-color: #444;
     color: white;
 }
 
 .zoom-controls button:focus {
     outline: 1px solid hsl(229, 90%, 55%);
+}
+
+.zoom-level {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    padding: 10px;
+    background-color: #eee;
+    color: black;
+    border-top-right-radius: 10px;
+    user-select: none;
+}
+
+.zoom-controls button,
+.zoom-level {
+    opacity: 0.6;
+}
+
+.zoom-level:hover {
+    opacity: 1;
 }
