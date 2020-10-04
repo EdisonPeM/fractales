@@ -118,11 +118,11 @@ input[type='range']:focus {
     padding-left: 1.5em;
 }
 
-#parm_a {
+#parm_a input {
     margin: 10px 0;
 }
 
-#parm_b {
+#parm_b input {
     position: absolute;
     transform: rotate(-90deg) translate(-100%, -100%);
     transform-origin: top left;

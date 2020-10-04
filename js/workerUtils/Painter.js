@@ -143,12 +143,21 @@ class Painter {
     }
 
     zoomM({ x, y }, factor) {
-        this.myCalc.zoomAB(x, y, factor);
+        let axis = this.myCalc.zoomAB(x, y, factor);
         this.has_cnvsM_cache = false;
+
+        this.setAxis({
+            x: axis.an,
+            y: axis.bn,
+        });
     }
 
     zoomJ({ x, y }, factor) {
         this.myCalc.zoomXY(x, y, factor);
         this.has_cnvsJ_cache = false;
+    }
+
+    getLimits() {
+        return this.myCalc.getValues();
     }
 }

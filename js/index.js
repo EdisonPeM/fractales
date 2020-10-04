@@ -3,8 +3,10 @@ import GradientGenerator from './GradientGenerator.js';
 /* ----------------------------------- */
 /*     Document Fixed Range Styles     */
 /* ----------------------------------- */
-const parm_a = document.getElementById('parm_a');
-const parm_b = document.getElementById('parm_b');
+const parm_a_range = document.querySelector('#parm_a');
+const parm_b_range = document.querySelector('#parm_b');
+const parm_a = document.querySelector('#parm_a input');
+const parm_b = document.querySelector('#parm_b input');
 
 function setRangeSize() {
     parm_b.style.width = parm_a.getClientRects()[0].width + 'px';
@@ -20,10 +22,16 @@ const output = document.getElementById('output');
 
 function updateOutput() {
     parm_a.title = parm_a.value;
+    parm_a_range.dataset.min = parm_a.min;
+    parm_a_range.dataset.max = parm_a.max;
+
     parm_b.title = parm_b.value;
-    output.innerText = `c = (${(+parm_a.value).toFixed(
-        3
-    )}) + (${(+parm_b.value).toFixed(3)})i`;
+    parm_b_range.dataset.min = parm_b.min;
+    parm_b_range.dataset.max = parm_b.max;
+
+    output.innerText = `
+        c = (${(+parm_a.value).toFixed(5)}) + (${(+parm_b.value).toFixed(5)})i
+    `;
 }
 
 parm_a.addEventListener('input', updateOutput);
@@ -149,9 +157,17 @@ myWorker.addEventListener('message', function (oEvent) {
         if (oEvent.data.params) {
             parm_a.value = oEvent.data.params.a || parm_a.value;
             parm_b.value = oEvent.data.params.b || parm_b.value;
-
-            updateOutput();
         }
+
+        // change limits if is necesary
+        if (oEvent.data.limits) {
+            parm_a.min = oEvent.data.limits.amin || '-2.5';
+            parm_a.max = oEvent.data.limits.amax || '1';
+            parm_b.min = oEvent.data.limits.bmin || '-1.75';
+            parm_b.max = oEvent.data.limits.bmax || '1.75';
+        }
+
+        updateOutput();
     }
 });
 

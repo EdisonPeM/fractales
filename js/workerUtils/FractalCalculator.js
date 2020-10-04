@@ -45,6 +45,22 @@ class FractalCalculator {
         if (values.bmax) this.bmax = values.bmax;
     }
 
+    getValues() {
+        return {
+            // coords to Julia
+            xmin: this.xmin.toFixed(5),
+            ymin: this.ymin.toFixed(5),
+            xmax: this.xmax.toFixed(5),
+            ymax: this.ymax.toFixed(5),
+
+            // coords to Mandelbrot
+            amin: this.amin.toFixed(5),
+            bmin: this.bmin.toFixed(5),
+            amax: this.amax.toFixed(5),
+            bmax: this.bmax.toFixed(5),
+        };
+    }
+
     zoomXY(x, y, factor = 1) {
         if (factor === 0) {
             this.setValues(this.defaultValues.julia);
@@ -66,12 +82,12 @@ class FractalCalculator {
     }
 
     zoomAB(a, b, factor) {
+        let an = this.amin + a * this.da;
+        let bn = this.bmin + b * this.db;
+
         if (factor === 0) {
             this.setValues(this.defaultValues.mandelbrot);
         } else {
-            let an = this.amin + a * this.da;
-            let bn = this.bmin + b * this.db;
-
             let ta = (this.amax - this.amin) / 2;
             let tb = (this.bmax - this.bmin) / 2;
 
@@ -83,6 +99,7 @@ class FractalCalculator {
         }
 
         this.setDa(this.q, this.p);
+        return { an, bn };
     }
 
     setDz(q, p) {
