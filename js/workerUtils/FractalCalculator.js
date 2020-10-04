@@ -47,11 +47,11 @@ class FractalCalculator {
         let tx = (this.xmax - this.xmin) / 2;
         let ty = (this.ymax - this.ymin) / 2;
 
-        this.xmin = xn - tx * factor; // + fx;
-        this.xmax = xn + tx * factor; // - fx;
+        this.xmin = xn - tx * factor;
+        this.xmax = xn + tx * factor;
 
-        this.ymin = yn - ty * factor; // + fy;
-        this.ymax = yn + ty * factor; // - fy;
+        this.ymin = yn - ty * factor;
+        this.ymax = yn + ty * factor;
 
         this.setDz(this.q, this.p);
     }

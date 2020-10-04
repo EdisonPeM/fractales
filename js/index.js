@@ -120,56 +120,6 @@ let myWorker = new Worker('js/worker.js');
 /*      Transfer Canvas to worker      */
 /* ----------------------------------- */
 const miCanva = document.getElementById('miCanva');
-
-let ctrlKeyPessed = false;
-let shiftKeyKeyPessed = false;
-
-document.addEventListener('keydown', (e) => {
-    if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
-        ctrlKeyPessed = true;
-    }
-
-    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        shiftKeyKeyPessed = true;
-    }
-
-    if (ctrlKeyPessed) miCanva.classList.add('zoom-in');
-    if (shiftKeyKeyPessed) miCanva.classList.add('zoom-out');
-    if (ctrlKeyPessed && shiftKeyKeyPessed) miCanva.classList.add('move');
-});
-
-document.addEventListener('keyup', (e) => {
-    if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
-        ctrlKeyPessed = false;
-    }
-    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
-        shiftKeyKeyPessed = false;
-    }
-
-    if (!ctrlKeyPessed) miCanva.classList.remove('zoom-in');
-    if (!shiftKeyKeyPessed) miCanva.classList.remove('zoom-out');
-    if (!ctrlKeyPessed || !shiftKeyKeyPessed) miCanva.classList.remove('move');
-});
-
-miCanva.addEventListener('click', function (ev) {
-    let action = 'none';
-    if (ev.ctrlKey) action = 'zoom-in';
-    if (ev.shiftKey) action = 'zoom-out';
-    if (ev.ctrlKey && ev.shiftKey) action = 'move';
-
-    if (action == 'none') return;
-    if (drawingInProcess) return;
-    startDraw();
-
-    myWorker.postMessage({
-        action,
-        center: {
-            x: (ev.offsetX * miCanva.width) / miCanva.clientWidth,
-            y: (ev.offsetY * miCanva.height) / miCanva.clientHeight,
-        },
-    });
-});
-
 let transferCanva = miCanva.transferControlToOffscreen();
 myWorker.postMessage(
     {
@@ -278,6 +228,61 @@ randomBtn.addEventListener('click', function (ev) {
     });
 });
 
+/* ----------------------------------- */
+/*           Messages to Zoom          */
+/* ----------------------------------- */
+let ctrlKeyPessed = false;
+let shiftKeyKeyPessed = false;
+
+document.addEventListener('keydown', (e) => {
+    if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+        ctrlKeyPessed = true;
+    }
+
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        shiftKeyKeyPessed = true;
+    }
+
+    if (ctrlKeyPessed) miCanva.classList.add('zoom-in');
+    if (shiftKeyKeyPessed) miCanva.classList.add('zoom-out');
+    if (ctrlKeyPessed && shiftKeyKeyPessed) miCanva.classList.add('move');
+});
+
+document.addEventListener('keyup', (e) => {
+    if (e.code === 'ControlLeft' || e.code === 'ControlRight') {
+        ctrlKeyPessed = false;
+    }
+    if (e.code === 'ShiftLeft' || e.code === 'ShiftRight') {
+        shiftKeyKeyPessed = false;
+    }
+
+    if (!ctrlKeyPessed) miCanva.classList.remove('zoom-in');
+    if (!shiftKeyKeyPessed) miCanva.classList.remove('zoom-out');
+    if (!ctrlKeyPessed || !shiftKeyKeyPessed) miCanva.classList.remove('move');
+});
+
+miCanva.addEventListener('click', function (ev) {
+    let action = 'none';
+    if (ev.ctrlKey) action = 'zoom-in';
+    if (ev.shiftKey) action = 'zoom-out';
+    if (ev.ctrlKey && ev.shiftKey) action = 'move';
+
+    if (action == 'none') return;
+    if (drawingInProcess) return;
+    startDraw();
+
+    myWorker.postMessage({
+        action,
+        center: {
+            x: (ev.offsetX * miCanva.width) / miCanva.clientWidth,
+            y: (ev.offsetY * miCanva.height) / miCanva.clientHeight,
+        },
+    });
+});
+
+/* ----------------------------------- */
+/*              Utilities              */
+/* ----------------------------------- */
 function startDraw() {
     drawingInProcess = true;
 
