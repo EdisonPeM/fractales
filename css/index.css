@@ -106,6 +106,10 @@ input[type='range']:focus {
     cursor: crosshair;
 }
 
+.crosshair {
+    cursor: crosshair;
+}
+
 .range input {
     width: 100%;
 }

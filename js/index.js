@@ -311,9 +311,7 @@ zoomIn.addEventListener('click', function () {
     zoomOut.classList.remove('active');
     zoomMove.classList.remove('active');
 
-    miCanva.classList.add('zoom-in');
-    miCanva.classList.remove('zoom-out');
-    miCanva.classList.remove('move');
+    miCanva.classList.add('crosshair');
 });
 
 zoomOut.addEventListener('click', function () {
@@ -325,9 +323,7 @@ zoomOut.addEventListener('click', function () {
     zoomOut.classList.add('active');
     zoomMove.classList.remove('active');
 
-    miCanva.classList.remove('zoom-in');
-    miCanva.classList.add('zoom-out');
-    miCanva.classList.remove('move');
+    miCanva.classList.add('crosshair');
 });
 
 zoomMove.addEventListener('click', function () {
@@ -339,9 +335,7 @@ zoomMove.addEventListener('click', function () {
     zoomOut.classList.remove('active');
     zoomMove.classList.add('active');
 
-    miCanva.classList.remove('zoom-in');
-    miCanva.classList.remove('zoom-out');
-    miCanva.classList.add('move');
+    miCanva.classList.add('crosshair');
 });
 
 zoomHome.addEventListener('click', function () {
@@ -356,6 +350,7 @@ zoomHome.addEventListener('click', function () {
     miCanva.classList.remove('zoom-in');
     miCanva.classList.remove('zoom-out');
     miCanva.classList.remove('move');
+    miCanva.classList.remove('crosshair');
 
     if (drawingInProcess) return;
     startDraw();
@@ -374,6 +369,7 @@ miCanva.addEventListener('click', function () {
     miCanva.classList.remove('zoom-in');
     miCanva.classList.remove('zoom-out');
     miCanva.classList.remove('move');
+    miCanva.classList.remove('crosshair');
 });
 
 /* ----------------------------------- */
