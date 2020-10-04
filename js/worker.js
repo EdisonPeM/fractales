@@ -30,7 +30,6 @@ self.onmessage = function (e) {
 
             // Only Madelbrot show axis
             if (this.currentFractal === 'mandelbrot') draw('mandelbrot');
-
             break;
 
         case 'random':
@@ -38,18 +37,39 @@ self.onmessage = function (e) {
             this.currentFractal = 'julia';
             draw('random');
             break;
+
+        case 'zoom-in':
+            zoom(e.data.center, 0.5);
+            break;
+
+        case 'zoom-out':
+            zoom(e.data.center, 2);
+            break;
+
+        case 'move':
+            zoom(e.data.center, 1);
+            break;
+
+        case 'zoom-default':
+            zoom(e.data.center, 0);
+            break;
     }
 };
 
 function draw(fractalCase) {
     drawFractal(fractalCase).then((done) => {
         let axis = this.myPainter.getAxis();
+        let limits = this.myPainter.getLimits();
+        let zoomLevel = this.myPainter.getZoomLevel()[this.currentFractal];
+
         postMessage({
             done,
             params: {
                 a: axis.x,
                 b: axis.y,
             },
+            limits,
+            zoomLevel,
         });
     });
 }
@@ -62,5 +82,17 @@ async function drawFractal(fractalCase) {
             return this.myPainter.dibujarJulia();
         case 'random':
             return this.myPainter.dibujarJuliaRandom();
+        default:
+            return true;
     }
+}
+
+function zoom(pointCenter, scale) {
+    if (this.currentFractal == 'mandelbrot')
+        this.myPainter.zoomM(pointCenter, scale);
+
+    if (this.currentFractal == 'julia')
+        this.myPainter.zoomJ(pointCenter, scale);
+
+    draw(this.currentFractal);
 }

@@ -16,11 +16,13 @@ class Painter {
         this.cnvsM_cache = new OffscreenCanvas(this.width, this.height);
         this.ctxM_cache = this.cnvsM_cache.getContext('2d');
         this.has_cnvsM_cache = false;
+        this.zoomMLevel = 1;
 
         // Julia Cache canvas
         this.cnvsJ_cache = new OffscreenCanvas(this.width, this.height);
         this.ctxJ_cache = this.cnvsJ_cache.getContext('2d');
         this.has_cnvsJ_cache = false;
+        this.zoomJLevel = 1;
 
         // Initial Axis
         this.x = 0;
@@ -140,5 +142,39 @@ class Painter {
     cleanCache() {
         this.has_cnvsM_cache = false;
         this.has_cnvsJ_cache = false;
+    }
+
+    zoomM({ x, y }, factor) {
+        let axis = this.myCalc.zoomAB(x, y, factor);
+        this.has_cnvsM_cache = false;
+
+        this.setAxis({
+            x: axis.an,
+            y: axis.bn,
+        });
+
+        if (factor < 1) this.zoomMLevel++;
+        if (factor == 1) this.zoomMLevel = 1;
+        if (factor > 1) this.zoomMLevel--;
+    }
+
+    zoomJ({ x, y }, factor) {
+        this.myCalc.zoomXY(x, y, factor);
+        this.has_cnvsJ_cache = false;
+
+        if (factor < 1) this.zoomJLevel++;
+        if (factor == 1) this.zoomJLevel = 1;
+        if (factor > 1) this.zoomJLevel--;
+    }
+
+    getLimits() {
+        return this.myCalc.getValues();
+    }
+
+    getZoomLevel() {
+        return {
+            julia: this.zoomJLevel,
+            mandelbrot: this.zoomMLevel,
+        };
     }
 }
