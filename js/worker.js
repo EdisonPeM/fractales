@@ -60,14 +60,16 @@ function draw(fractalCase) {
     drawFractal(fractalCase).then((done) => {
         let axis = this.myPainter.getAxis();
         let limits = this.myPainter.getLimits();
+        let zoomLevel = this.myPainter.getZoomLevel()[this.currentFractal];
 
         postMessage({
             done,
-            limits,
             params: {
                 a: axis.x,
                 b: axis.y,
             },
+            limits,
+            zoomLevel,
         });
     });
 }

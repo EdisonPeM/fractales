@@ -167,6 +167,10 @@ myWorker.addEventListener('message', function (oEvent) {
             parm_b.max = oEvent.data.limits.bmax || '1.75';
         }
 
+        if (oEvent.data.zoomLevel) {
+            setZoomLevel(oEvent.data.zoomLevel);
+        }
+
         updateOutput();
     }
 });
@@ -247,6 +251,11 @@ randomBtn.addEventListener('click', function (ev) {
 /* ----------------------------------- */
 /*           Messages to Zoom          */
 /* ----------------------------------- */
+function setZoomLevel(zoomLevel) {
+    if (zoomLevel <= 0) zoomLevel--;
+    document.querySelector('.zoom-level').textContent = 'Zoom x' + zoomLevel;
+}
+
 let zoomInAction = false;
 let zoomOutAction = false;
 let moveAction = false;
@@ -355,6 +364,7 @@ zoomHome.addEventListener('click', function () {
     if (drawingInProcess) return;
     startDraw();
 
+    setZoomLevel(1);
     myWorker.postMessage({
         action: 'zoom-default',
         center: { x: 0, y: 0 },
@@ -362,6 +372,10 @@ zoomHome.addEventListener('click', function () {
 });
 
 miCanva.addEventListener('click', function () {
+    zoomInAction = false;
+    zoomOutAction = false;
+    moveAction = false;
+
     zoomIn.classList.remove('active');
     zoomOut.classList.remove('active');
     zoomMove.classList.remove('active');
