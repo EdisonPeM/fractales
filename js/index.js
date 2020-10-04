@@ -1,17 +1,17 @@
-import GradientGenerator from './GradientGenerator.js'
+import GradientGenerator from './GradientGenerator.js';
 
 /* ----------------------------------- */
 /*     Document Fixed Range Styles     */
 /* ----------------------------------- */
-const parm_a = document.getElementById('parm_a')
-const parm_b = document.getElementById('parm_b')
+const parm_a = document.getElementById('parm_a');
+const parm_b = document.getElementById('parm_b');
 
 function setRangeSize() {
     parm_b.style.width = parm_a.getClientRects()[0].width + 'px';
 }
 
-document.addEventListener('DOMContentLoaded', setRangeSize)
-window.addEventListener('resize', setRangeSize)
+document.addEventListener('DOMContentLoaded', setRangeSize);
+window.addEventListener('resize', setRangeSize);
 
 /* ----------------------------------- */
 /*            Update Output            */
@@ -21,7 +21,9 @@ const output = document.getElementById('output');
 function updateOutput() {
     parm_a.title = parm_a.value;
     parm_b.title = parm_b.value;
-    output.innerText = `c = (${(+parm_a.value).toFixed(3)}) + (${(+parm_b.value).toFixed(3)})i`
+    output.innerText = `c = (${(+parm_a.value).toFixed(
+        3
+    )}) + (${(+parm_b.value).toFixed(3)})i`;
 }
 
 parm_a.addEventListener('input', updateOutput);
@@ -34,9 +36,9 @@ const colorsControl = document.querySelector('.gradient-controls');
 const myColorGen = new GradientGenerator(colorsControl);
 window.addEventListener('resize', () => {
     if (modal.style.display !== 'none') {
-        myColorGen.updateAllPositions()
+        myColorGen.updateAllPositions();
     }
-})
+});
 
 /* ----------------------------------- */
 /*        Control of Modal             */
@@ -49,25 +51,27 @@ document.querySelector('#changeColors').addEventListener('click', () => {
     modal.style.display = '';
     setTimeout(() => {
         modal.style.opacity = 1;
-    })
-    myColorGen.updateAllPositions()
-})
+    });
+    myColorGen.updateAllPositions();
+});
 
 /* ----------------------------------- */
 /*             Modal Events            */
 /* ----------------------------------- */
-document.querySelector('#add').addEventListener('click', addColor)
-document.querySelector('#accept').addEventListener('click', acceptColorChange)
-document.querySelector('.close-modal').addEventListener('click', cancelColorChange)
+document.querySelector('#add').addEventListener('click', addColor);
+document.querySelector('#accept').addEventListener('click', acceptColorChange);
+document
+    .querySelector('.close-modal')
+    .addEventListener('click', cancelColorChange);
 document.addEventListener('keyup', (e) => {
     if (e.code === 'Escape') {
-        cancelColorChange()
+        cancelColorChange();
     }
 
     if (e.code === 'Enter') {
-        acceptColorChange()
+        acceptColorChange();
     }
-})
+});
 
 function addColor() {
     myColorGen.addNewColor();
@@ -75,34 +79,34 @@ function addColor() {
 
 function acceptColorChange() {
     myColorGen.acceptChangedColors();
-    closeModal()
+    closeModal();
 
     // When accept the colors, repaint the fractals
     let colors = myColorGen.createGradiant();
     myWorker.postMessage({
         action: 'setColors',
-        colors
+        colors,
     });
     drawFractal();
 }
 
 function cancelColorChange() {
     myColorGen.cancelNewColors();
-    closeModal()
+    closeModal();
 }
 
 function closeModal() {
     modal.style.opacity = '';
     setTimeout(() => {
         modal.style.display = 'none';
-    }, 200)
+    }, 200);
 }
 
 /* ----------------------------------- */
 /*     Verify Browser Compatibility    */
 /* ----------------------------------- */
 if (!window.OffscreenCanvas) {
-    alert('Su navegador no soporta esta aplicación')
+    alert('Su navegador no soporta esta aplicación');
 }
 
 /* ----------------------------------- */
@@ -110,32 +114,36 @@ if (!window.OffscreenCanvas) {
 /* ----------------------------------- */
 let drawingInProcess = false;
 const spinner = document.getElementById('spinner');
-let myWorker = new Worker("js/worker.js");
+let myWorker = new Worker('js/worker.js');
 
 /* ----------------------------------- */
 /*      Transfer Canvas to worker      */
 /* ----------------------------------- */
-const miCanva = document.getElementById("miCanva");
+const miCanva = document.getElementById('miCanva');
+
 let transferCanva = miCanva.transferControlToOffscreen();
-myWorker.postMessage({
-    action: 'init',
-    canvas: transferCanva
-}, [transferCanva]);
+myWorker.postMessage(
+    {
+        action: 'init',
+        canvas: transferCanva,
+    },
+    [transferCanva]
+);
 
 /* ----------------------------------- */
 /*        send Colors to worker        */
 /* ----------------------------------- */
 myWorker.postMessage({
     action: 'setColors',
-    colors: myColorGen.createGradiant()
+    colors: myColorGen.createGradiant(),
 });
 
 /* ------------------------------------------ */
 /*    Add Message Event Listener to Worker    */
 /* ------------------------------------------ */
-myWorker.addEventListener("message", function (oEvent) {
+myWorker.addEventListener('message', function (oEvent) {
     if (oEvent.data.done) {
-        spinner.style.display = 'none'
+        spinner.style.display = 'none';
         drawingInProcess = false;
 
         // fixed range sliders values
@@ -143,7 +151,7 @@ myWorker.addEventListener("message", function (oEvent) {
             parm_a.value = oEvent.data.params.a || parm_a.value;
             parm_b.value = oEvent.data.params.b || parm_b.value;
 
-            updateOutput()
+            updateOutput();
         }
     }
 });
@@ -159,35 +167,28 @@ function changeFractalType(fractalName) {
 
     myWorker.postMessage({
         action: 'changeType',
-        type: fractalName
-    })
+        type: fractalName,
+    });
 }
 
-juliaBtn.addEventListener('click', () => changeFractalType('julia'))
-mandelbrotBtn.addEventListener('click', () => changeFractalType('mandelbrot'))
+juliaBtn.addEventListener('click', () => changeFractalType('julia'));
+mandelbrotBtn.addEventListener('click', () => changeFractalType('mandelbrot'));
 
 /* ----------------------------------- */
 /*        Send Messages to draw        */
 /* ----------------------------------- */
 function drawFractal() {
     if (drawingInProcess) return;
-    drawingInProcess = true;
-
-    // Use SetTimeOut to wait the worker response message
-    setTimeout(() => {
-        if (drawingInProcess) {
-            spinner.style.display = ''
-        }
-    }, 0)
+    startDraw();
 
     // Send Message to worker
     myWorker.postMessage({
         action: 'draw',
         params: {
             a: +parm_a.value,
-            b: +parm_b.value
-        }
-    })
+            b: +parm_b.value,
+        },
+    });
 }
 
 parm_a.addEventListener('change', drawFractal);
@@ -206,9 +207,9 @@ function changeAxis() {
         action: 'changeAxis',
         params: {
             a: +parm_a.value,
-            b: +parm_b.value
-        }
-    })
+            b: +parm_b.value,
+        },
+    });
 }
 
 parm_a.addEventListener('input', changeAxis);
@@ -220,17 +221,21 @@ parm_b.addEventListener('input', changeAxis);
 const randomBtn = document.getElementById('randomBtn');
 randomBtn.addEventListener('click', function (ev) {
     if (drawingInProcess) return;
+    startDraw();
+
+    // Send Message to worker
+    myWorker.postMessage({
+        action: 'random',
+    });
+});
+
+function startDraw() {
     drawingInProcess = true;
 
     // Use SetTimeOut to wait the worker response message
     setTimeout(() => {
         if (drawingInProcess) {
-            spinner.style.display = ''
+            spinner.style.display = '';
         }
-    }, 0)
-
-    // Send Message to worker
-    myWorker.postMessage({
-        action: 'random'
-    })
-})
+    }, 0);
+}
